@@ -1,3 +1,4 @@
+import {Alert} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
 

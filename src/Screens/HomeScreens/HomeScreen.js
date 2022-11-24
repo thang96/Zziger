@@ -22,14 +22,15 @@ import CustomCamera from '../../Components/CustomCamera';
 // import {postImg} from '../../Apis/HomeAPI';
 import useGetShare from '../../Hooks/useGetShare';
 import CustomLoading from '../../Components/CustomLoading';
-import {
-  addBackOfCard,
-  addFrontCard,
-  addShareCard,
-} from '../../Stores/slices/cardSlice';
+
 import {useDispatch, useSelector} from 'react-redux';
 import AICameraAPI from '../../Apis/HomeAPI/AICameraAPI/AICameraAPI';
 import {addResource} from '../../Stores/slices/resourceSlice';
+import {
+  addFrontCard,
+  addBackgroundFront,
+  addValuesFront,
+} from '../../Stores/slices/cardValuesSlice';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -58,9 +59,9 @@ const HomeScreen = () => {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
+        // console.log('You can use the camera');
       } else {
-        console.log('Camera permission denied');
+        // console.log('Camera permission denied');
       }
     } catch (err) {
       console.warn(err);
@@ -84,13 +85,17 @@ const HomeScreen = () => {
             if (res?.status == 200) {
               let card_img = res?.data?.card_img;
               dispatch(addFrontCard(card_img));
-              navigation.navigate('ChooseTypeOfBusinessCard');
               await AICameraAPI.DetailImageAPI(card_img)
                 .then(res => {
                   if (res?.status == 200) {
-                    dispatch(addResource(res?.data?.namecard_info));
+                    dispatch(
+                      addBackgroundFront(res?.data?.namecard_info?.background),
+                    );
+                    dispatch(addValuesFront(res?.data?.namecard_info?.values));
                     setLoading(false);
                     setModalCamera(false);
+                    navigation.navigate('ChooseTypeOfBusinessCard');
+                    // navigation.navigate('EditTemplate');
                   }
                 })
                 .catch(function (error) {

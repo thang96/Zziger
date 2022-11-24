@@ -10,12 +10,12 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import {colors, icons, images} from '../../Constants';
-import CustomButtonLogo from '../CustomButtonLogo';
-import {uuid} from '../../Utils/uuid';
-import CustomTextInput from '../CustomTextInput';
-import CustomButton from '../CustomButton';
-import CustomTwoBottomButtonFuntion from '../../Components/CustomTwoBottomButtonFuntion';
+import {colors, icons, images} from '../Constants';
+import CustomButtonLogo from './CustomButtonLogo';
+import {uuid} from '../Utils/uuid';
+import CustomTextInput from './CustomTextInput';
+import CustomButton from './CustomButton';
+import CustomTwoBottomButtonFuntion from './CustomTwoBottomButtonFuntion';
 
 const FAKE_DATA = [
   {
@@ -72,11 +72,7 @@ const CustomModalChooseThemeTemplate = props => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={onRequestClose}>
-        <View
-          style={[
-            styles.eachContainer,
-            {height: widthHeight - (heightIMG + 145)},
-          ]}>
+        <View style={[styles.eachContainer, {height: '50%'}]}>
           <View style={styles.viewRow}>
             <Text style={styles.title}>Theme Template</Text>
             <CustomButtonLogo

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {icons} from '../../Constants';
+import common from '../../Utils/common';
 import {CameraScreen, Camera, CameraType} from 'react-native-camera-kit';
 import AICameraAPI from '../../Apis/HomeAPI/AICameraAPI/AICameraAPI';
 const CameraHome = () => {

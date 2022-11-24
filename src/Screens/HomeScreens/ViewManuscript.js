@@ -25,16 +25,17 @@ import CustomModalCamera from '../../Components/CustomModalCamera';
 import ImagePicker from 'react-native-image-crop-picker';
 import CustomLoading from '../../Components/CustomLoading';
 import common from '../../Utils/common';
-import {uuid} from '../../Utils/uuid';
+import uuid from 'react-native-uuid';
 import {addbackOfCardStore} from '../../Stores/slices/cardSlice';
 import CustomAppbar from '../../Components/CustomAppBar';
 import CustomCamera from '../../Components/CustomCamera';
 import AICameraAPI from '../../Apis/HomeAPI/AICameraAPI/AICameraAPI';
 const ViewManuscript = props => {
-  const frontCardStore = useSelector(state => state.card.frontCard);
-  const backOfCardStoreStore = useSelector(state => state.card.backOfCardStore);
-  const shareCardStore = useSelector(state => state.card.shareCard);
-  const resource = useSelector(state => state.resource.resourceStore);
+  const frontCardStore = useSelector(state => state.cardValues.frontCard);
+  const backgroundFrontStore = useSelector(
+    state => state.cardValues.backgroundFront,
+  );
+  const valuesFrontStore = useSelector(state => state.cardValues.valuesFront);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isFront, setIsFront] = useState(true);
@@ -44,17 +45,10 @@ const ViewManuscript = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalCamera, setModalCamera] = useState(false);
-  const [frontCard, setFrontCard] = useState(null);
-
-  useEffect(() => {
-    shareCardStore?.contentUri
-      ? setFrontCard(shareCardStore?.contentUri)
-      : setFrontCard(frontCardStore?.uri);
-  }, []);
 
   useEffect(() => {
     renderSize();
-  }, [resource]);
+  }, [backgroundFrontStore, valuesFrontStore]);
   const imageWidth = Dimensions.get('window').width - 20;
 
   const [widthCard, setWidthCard] = useState(0);
@@ -62,17 +56,15 @@ const ViewManuscript = props => {
   const [scale, setScale] = useState(0);
   const [backgroundCard, setBackgroundCard] = useState(null);
   const [values, setValues] = useState([]);
-
-  // console.log(resource[0]?.values[0], 'resource');
   const renderSize = () => {
-    let widthCard = resource[0]?.background[0]?.width;
+    let widthCard = backgroundFrontStore[0]?.width;
     let scales = widthCard / imageWidth;
-    if (resource && widthCard) {
+    if (backgroundFrontStore && valuesFrontStore) {
       setScale(scales);
-      setWidthCard(resource[0]?.background[0]?.width / scales);
-      setHeightCard(resource[0]?.background[0]?.height / scales);
-      setBackgroundCard(resource[0]?.background[0]?.background);
-      setValues(resource[0]?.values);
+      setWidthCard(backgroundFrontStore[0]?.width / scales);
+      setHeightCard(backgroundFrontStore[0]?.height / scales);
+      setBackgroundCard(backgroundFrontStore[0]?.background);
+      setValues(valuesFrontStore);
     }
   };
 
@@ -123,7 +115,7 @@ const ViewManuscript = props => {
                 ) => {
                   // console.log(x / scale, y / scale, '----------', text);
                   return (
-                    <View key={uuid}>
+                    <View key={`${uuid.v1()}`}>
                       <View
                         style={[
                           {
@@ -138,7 +130,7 @@ const ViewManuscript = props => {
                           style={[
                             {
                               fontSize: (font_size / scale) * scaleX,
-                              // transform: [{scaleX: scaleX}, {scaleY: scaleY}],
+                              color: color,
                             },
                           ]}>
                           {text}

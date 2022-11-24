@@ -12,6 +12,7 @@ import {
   Dimensions,
   Modal,
   Alert,
+  TextInput,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import CustomAppbar from '../../../Components/CustomAppBar';
@@ -21,78 +22,159 @@ import CustomTwoButtonFuntion from '../../../Components/CustomTwoButtonFuntion';
 import CustomTextInput from '../../../Components/CustomTextInput';
 import {colors, icons, images} from '../../../Constants';
 import CustomModaViewManuscriptSelete from '../../../Components/CustomModaViewManuscriptSelete';
-import CustomModalChangeColor from '../../../Components/CustomModalEditTemplate/CustomModalChangeColor';
-import CustomModalChooseThemeTemplate from '../../../Components/CustomModalEditTemplate/CustomModalChooseThemeTemplate';
+import CustomModalChangeColor from '../../../Components/CustomModalChangeColor';
+import CustomModalChooseThemeTemplate from '../../../Components/CustomModalChooseThemeTemplate';
+import uuid from 'react-native-uuid';
+import {
+  addValuesFront,
+  updateValuesFront,
+} from '../../../Stores/slices/cardValuesSlice';
+
+const InputText = props => {
+  const {text, changeValue} = props;
+  const [textChange, setTextChange] = useState('');
+  const dispatch = useDispatch();
+  const endHandleEdit = val => {
+    setTextChange(val);
+  };
+  useEffect(() => {
+    setTextChange(text);
+  }, []);
+  return (
+    <View style={styles.viewStyle}>
+      <Text style={styles.title}>Title</Text>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <TextInput
+          onEndEditing={evt => endHandleEdit(evt.nativeEvent.text)}
+          style={styles.styleCustomTextInput}
+          defaultValue={textChange}
+        />
+        <TouchableOpacity onPress={() => changeValue(textChange)}>
+          <Image
+            style={{width: 30, height: 30, marginHorizontal: 5}}
+            source={icons.ic_change}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 const EditTemplate = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isFront, setIsFront] = useState(true);
-  const imageWidth = Dimensions.get('window').width - 20;
-  const frontCardStore = useSelector(state => state.card.frontCard);
-  const backOfCardStore = useSelector(state => state.card.backOfCard);
-  const shareCardStore = useSelector(state => state.card.shareCard);
+  const frontCardStore = useSelector(state => state.cardValues.frontCard);
+  const backgroundFrontStore = useSelector(
+    state => state.cardValues.backgroundFront,
+  );
+  const valuesFrontStore = useSelector(state => state.cardValues.valuesFront);
   const [modalSelete, setModalSelete] = useState(false);
   const [modalChangeColor, setModalChangeColor] = useState(false);
   const [modalChangeTheme, setModalChangeTheme] = useState(false);
+  const [modalChangeValue, setModalChangeValue] = useState(true);
   const [frontCard, setFrontCard] = useState(null);
+  const [valueChange, setValueChange] = useState('');
+
   useEffect(() => {
-    shareCardStore?.contentUri
-      ? setFrontCard(shareCardStore?.contentUri)
-      : setFrontCard(frontCardStore?.uri);
-  }, []);
-  const backOfCard =
-    Platform.OS === 'ios' ? backOfCardStore?.path : backOfCardStore?.uri;
+    renderSize();
+  }, [backgroundFrontStore, valuesFrontStore]);
+  const imageWidth = Dimensions.get('window').width - 20;
+
+  const [widthCard, setWidthCard] = useState(0);
+  const [heightCard, setHeightCard] = useState(0);
+  const [scale, setScale] = useState(0);
+  const [backgroundCard, setBackgroundCard] = useState(null);
+  const [values, setValues] = useState([]);
+  const renderSize = () => {
+    let widthCard = backgroundFrontStore[0]?.width;
+    let scales = widthCard / imageWidth;
+    if (backgroundFrontStore && widthCard) {
+      setScale(scales);
+      setWidthCard(backgroundFrontStore[0]?.width / scales);
+      setHeightCard(backgroundFrontStore[0]?.height / scales);
+      setBackgroundCard(backgroundFrontStore[0]?.background);
+      setValues(valuesFrontStore);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <CustomAppbar
-        styleAppBar={{paddingHorizontal: 8}}
-        iconLeft={icons.ic_back}
-        iconRight2={icons.ic_bell}
-        iconRight1={icons.ic_shopping}
-        title={'View Manuscript'}
-        onPressLeftIcon={() => navigation.goBack()}
-      />
-      <View style={{paddingHorizontal: 10}}>
-        <CustomTwoButtonFuntion
-          titleLeft={'Front'}
-          titleRight={'Back'}
-          styleTwoButton={{height: 40, marginVertical: 20}}
-          styleButtonLeft={[
-            {
-              backgroundColor: isFront
-                ? colors.backgroundButton
-                : colors.backgroundInput,
-            },
-            styles.styleButtonLeft,
-          ]}
-          styleButtonRight={[
-            {
-              backgroundColor: !isFront
-                ? colors.backgroundButton
-                : colors.backgroundInput,
-            },
-            ,
-            styles.styleButtonRight,
-          ]}
-          onPressLeft={() => setIsFront(true)}
-          onPressRight={() => setIsFront(false)}
+      <View style={{width: '100%', height: '50%'}}>
+        <CustomAppbar
+          styleAppBar={{paddingHorizontal: 8}}
+          iconLeft={icons.ic_back}
+          iconRight2={icons.ic_bell}
+          iconRight1={icons.ic_shopping}
+          title={'Edit Template'}
+          onPressLeftIcon={() => navigation.goBack()}
         />
-        <Image
-          source={{
-            uri: isFront
-              ? `data:image/png;base64,${frontCardStore}`
-              : `data:image/png;base64,${backOfCardStore}`,
-          }}
-          style={{
-            width: imageWidth,
-            height: imageWidth / 1.8,
-            marginBottom: 10,
-          }}
-          resizeMode={'cover'}
-        />
-      </View>
-
-      <View style={styles.eachContainer}>
+        <View style={{paddingHorizontal: 10}}>
+          <CustomTwoButtonFuntion
+            titleLeft={'Front'}
+            titleRight={'Back'}
+            styleTwoButton={{height: 40, marginVertical: 20}}
+            styleButtonLeft={[
+              {
+                backgroundColor: isFront
+                  ? colors.backgroundButton
+                  : colors.backgroundInput,
+              },
+              styles.styleButtonLeft,
+            ]}
+            styleButtonRight={[
+              {
+                backgroundColor: !isFront
+                  ? colors.backgroundButton
+                  : colors.backgroundInput,
+              },
+              ,
+              styles.styleButtonRight,
+            ]}
+            onPressLeft={() => setIsFront(true)}
+            onPressRight={() => setIsFront(false)}
+          />
+          <View style={{width: widthCard, height: heightCard}}>
+            <Image
+              source={{uri: `data:image/png;base64,${backgroundCard}`}}
+              style={{
+                width: widthCard,
+                height: heightCard,
+                position: 'absolute',
+              }}
+              resizeMode={'cover'}
+            />
+            {values != [] &&
+              values.map(
+                (
+                  {color, type, font_size, x, y, text, scaleX, scaleY},
+                  index,
+                ) => {
+                  // console.log(x / scale, y / scale, '----------', text);
+                  return (
+                    <View key={`${uuid.v1()}`}>
+                      {type == 'text' ? (
+                        <Text
+                          style={[
+                            {
+                              fontSize: (font_size / scale) * scaleX,
+                              color: color,
+                              transform: [
+                                {translateX: x / scale},
+                                {translateY: y / scale},
+                              ],
+                              position: 'absolute',
+                            },
+                          ]}>
+                          {text}
+                        </Text>
+                      ) : null}
+                    </View>
+                  );
+                },
+              )}
+          </View>
+        </View>
         <CustomModalChangeColor
           modalVisible={modalChangeColor}
           onRequestClose={() => setModalChangeColor(false)}
@@ -122,9 +204,11 @@ const EditTemplate = props => {
             setModalChangeTheme(true);
           }}
         />
+      </View>
 
+      <ScrollView style={[styles.eachContainer, {height: '50%'}]}>
         {!modalChangeColor && (
-          <ScrollView style={{paddingHorizontal: 10}}>
+          <View style={{paddingHorizontal: 10}}>
             <View style={styles.viewRow}>
               <CustomButton
                 title={'ASSIGN DESIGN'}
@@ -137,66 +221,36 @@ const EditTemplate = props => {
                 onPress={() => setModalSelete(true)}
               />
             </View>
-            <Text style={styles.title}>이름</Text>
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'홍길동'}
-            />
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'총괄팀장'}
-            />
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'주식회사 프린파크'}
-            />
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'광고마케팅팀'}
-            />
-            <Text style={styles.title}>주소</Text>
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'주소'}
-            />
-
-            <Text style={styles.title}>전화번호</Text>
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'전화번호'}
-              instructionText={'T'}
-            />
-            <Text style={styles.title}>팩스</Text>
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'팩스'}
-              instructionText={'F'}
-            />
-            <Text style={styles.title}>휴대폰</Text>
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'휴대폰'}
-              instructionText={'M'}
-            />
-            <Text style={styles.title}>이메일</Text>
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'이메일'}
-              instructionText={'E'}
-            />
-            <Text style={styles.title}>홈페이지</Text>
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'홈페이지'}
-              instructionText={'H'}
-            />
-            <CustomTextInput
-              styleViewInput={styles.styleCustomTextInput}
-              placeholder={'홈페이지'}
-            />
-          </ScrollView>
+            {values != [] &&
+              values.map(
+                (
+                  {color, type, font_size, x, y, text, scaleX, scaleY},
+                  // item,
+                  index,
+                ) => (
+                  <View key={`${uuid.v1()}`}>
+                    <InputText
+                      text={text}
+                      changeValue={textChange => {
+                        let itemChange = {
+                          color: color,
+                          type: type,
+                          font_size: font_size,
+                          x: x,
+                          y: y,
+                          text: textChange,
+                          scaleX: scaleX,
+                          scaleY: scaleY,
+                        };
+                        dispatch(updateValuesFront({index, itemChange}));
+                      }}
+                    />
+                  </View>
+                ),
+              )}
+          </View>
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -228,12 +282,21 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   styleTextCustomButton: {color: 'white', fontSize: 14, fontWeight: 'bold'},
-  title: {fontSize: 18, fontWeight: 'bold', color: 'black'},
+  viewStyle: {
+    marginBottom: 10,
+  },
   styleCustomTextInput: {
     backgroundColor: 'white',
-    height: 45,
     borderRadius: 10,
-    marginVertical: 5,
+    flex: 1,
+    height: 45,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 5,
   },
 });
+
 export default EditTemplate;

@@ -10,9 +10,9 @@ import {
   FlatList,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {colors, icons} from '../../Constants';
-import CustomButtonLogo from '../CustomButtonLogo';
-import {uuid} from '../../Utils/uuid';
+import {colors, icons} from '../Constants';
+import CustomButtonLogo from './CustomButtonLogo';
+import {uuid} from '../Utils/uuid';
 const FAKE_DATA_COLOR_ITEM = [
   {key: 1, value: 'rgb(119,119,119)'},
   {key: 2, value: 'rgb(226,119,119)'},
@@ -47,11 +47,7 @@ const CustomModalChangeColor = props => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={onRequestClose}>
-        <View
-          style={[
-            styles.eachContainer,
-            {height: widthHeight - (heightIMG + 145)},
-          ]}>
+        <View style={[styles.eachContainer, {height: '50%'}]}>
           <View style={styles.viewRow}>
             <Text style={styles.title}>Color</Text>
             <CustomButtonLogo

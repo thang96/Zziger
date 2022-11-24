@@ -32,4 +32,5 @@ export default {
   ic_hidden: require('../Assets/icons/ic_hidden.png'),
   ic_button_camera: require('../Assets/icons/ic_button_camera.png'),
   ic_button_back: require('../Assets/icons/ic_button_back.png'),
+  ic_change: require('../Assets/icons/ic_change.png'),
 };
