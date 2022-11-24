@@ -10,6 +10,7 @@ import ViewManuscript from './HomeScreens/ViewManuscript';
 import OrdersScreen from './HomeScreens/OderTemplate/OrdersScreen';
 import PaymentScreen from './HomeScreens/OderTemplate/PaymentScreen';
 import EditTemplate from './HomeScreens/EditTemplate/EditTemplate';
+import EditPositionTemplate from './HomeScreens/EditTemplate/EditPositionTemplate';
 
 export {
   SplashScreen,
@@ -22,4 +23,5 @@ export {
   OrdersScreen,
   PaymentScreen,
   EditTemplate,
+  EditPositionTemplate,
 };

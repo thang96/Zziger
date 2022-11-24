@@ -15,9 +15,11 @@ import {Provider} from 'react-redux';
 import {store} from './src/Stores/store';
 import MainNavigation from './src/Navigations/MainNavigation';
 import 'react-native-gesture-handler';
+import Orientation from 'react-native-orientation-locker';
 const App = () => {
   useEffect(() => {
     LogBox.ignoreAllLogs();
+    Orientation.lockToPortrait();
   }, []);
   return (
     <SafeAreaView style={styles.container}>

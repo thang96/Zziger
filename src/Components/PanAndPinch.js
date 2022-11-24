@@ -29,7 +29,7 @@ function PanAndPinch(props) {
     onResizeEnd,
     onRotateEnd,
     children,
-    resizerImageSource = require('../assets/icons/resize.png'),
+    resizerImageSource = icons.ic_resize,
     closeImageSource = icons.ic_closeRed,
     style,
     isSelected,

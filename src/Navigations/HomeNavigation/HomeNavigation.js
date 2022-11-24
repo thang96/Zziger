@@ -7,6 +7,7 @@ import {
   TypeOfBusinessCard,
   ViewManuscript,
   EditTemplate,
+  EditPositionTemplate,
   OrdersScreen,
   PaymentScreen,
 } from '../../Screens';
@@ -42,6 +43,11 @@ const HomeNavigation = () => {
       <Stack.Screen
         name="EditTemplate"
         component={EditTemplate}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="EditPositionTemplate"
+        component={EditPositionTemplate}
         options={{headerShown: false}}
       />
       <Stack.Screen

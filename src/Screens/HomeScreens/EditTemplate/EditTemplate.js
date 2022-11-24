@@ -1,4 +1,4 @@
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -29,6 +29,7 @@ import {
   addValuesFront,
   updateValuesFront,
 } from '../../../Stores/slices/cardValuesSlice';
+import Orientation from 'react-native-orientation-locker';
 
 const InputText = props => {
   const {text, changeValue} = props;
@@ -61,6 +62,10 @@ const InputText = props => {
 };
 
 const EditTemplate = props => {
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    Orientation.lockToPortrait();
+  }, [isFocused]);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isFront, setIsFront] = useState(true);
@@ -150,7 +155,6 @@ const EditTemplate = props => {
                   {color, type, font_size, x, y, text, scaleX, scaleY},
                   index,
                 ) => {
-                  // console.log(x / scale, y / scale, '----------', text);
                   return (
                     <View key={`${uuid.v1()}`}>
                       {type == 'text' ? (
@@ -192,6 +196,8 @@ const EditTemplate = props => {
           firtIcon={icons.ic_colors}
           secondTitle={'Choose theme template'}
           secondIcon={icons.ic_template}
+          thirdTitle={'Change position template'}
+          thirdIcon={icons.ic_changePosition}
           modalVisible={modalSelete}
           onRequestClose={() => setModalSelete(false)}
           closeModal={() => setModalSelete(false)}
@@ -202,6 +208,10 @@ const EditTemplate = props => {
           secondOnpress={() => {
             setModalSelete(false);
             setModalChangeTheme(true);
+          }}
+          thirdOnpress={() => {
+            navigation.navigate('EditPositionTemplate');
+            setModalSelete(false);
           }}
         />
       </View>
@@ -225,7 +235,6 @@ const EditTemplate = props => {
               values.map(
                 (
                   {color, type, font_size, x, y, text, scaleX, scaleY},
-                  // item,
                   index,
                 ) => (
                   <View key={`${uuid.v1()}`}>

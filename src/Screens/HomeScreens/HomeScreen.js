@@ -94,8 +94,8 @@ const HomeScreen = () => {
                     dispatch(addValuesFront(res?.data?.namecard_info?.values));
                     setLoading(false);
                     setModalCamera(false);
-                    navigation.navigate('ChooseTypeOfBusinessCard');
-                    // navigation.navigate('EditTemplate');
+                    // navigation.navigate('ChooseTypeOfBusinessCard');
+                    navigation.navigate('EditTemplate');
                   }
                 })
                 .catch(function (error) {
