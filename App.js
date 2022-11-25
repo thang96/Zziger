@@ -19,7 +19,6 @@ import Orientation from 'react-native-orientation-locker';
 const App = () => {
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    Orientation.lockToPortrait();
   }, []);
   return (
     <SafeAreaView style={styles.container}>

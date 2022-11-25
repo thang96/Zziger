@@ -29,43 +29,14 @@ import {
   addValuesFront,
   updateValuesFront,
 } from '../../../Stores/slices/cardValuesSlice';
-import Orientation from 'react-native-orientation-locker';
-
-const InputText = props => {
-  const {text, changeValue} = props;
-  const [textChange, setTextChange] = useState('');
-  const dispatch = useDispatch();
-  const endHandleEdit = val => {
-    setTextChange(val);
-  };
-  useEffect(() => {
-    setTextChange(text);
-  }, []);
-  return (
-    <View style={styles.viewStyle}>
-      <Text style={styles.title}>Title</Text>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <TextInput
-          onEndEditing={evt => endHandleEdit(evt.nativeEvent.text)}
-          style={styles.styleCustomTextInput}
-          defaultValue={textChange}
-        />
-        <TouchableOpacity onPress={() => changeValue(textChange)}>
-          <Image
-            style={{width: 30, height: 30, marginHorizontal: 5}}
-            source={icons.ic_change}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
+import Orientation, {
+  OrientationLocker,
+  PORTRAIT,
+} from 'react-native-orientation-locker';
 
 const EditTemplate = props => {
   const isFocused = useIsFocused();
-  useEffect(() => {
-    Orientation.lockToPortrait();
-  }, [isFocused]);
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isFront, setIsFront] = useState(true);
@@ -105,6 +76,7 @@ const EditTemplate = props => {
 
   return (
     <View style={styles.container}>
+      <OrientationLocker orientation={PORTRAIT} />
       <View style={{width: '100%', height: '50%'}}>
         <CustomAppbar
           styleAppBar={{paddingHorizontal: 8}}
@@ -307,5 +279,38 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+const InputText = props => {
+  // const isFocused = useIsFocused();
+  // useEffect(() => {
+  //   Orientation.lockToPortrait();
+  // }, [isFocused]);
+  const {text, changeValue} = props;
+  const [textChange, setTextChange] = useState('');
+  const dispatch = useDispatch();
+  const endHandleEdit = val => {
+    setTextChange(val);
+  };
+  useEffect(() => {
+    setTextChange(text);
+  }, []);
+  return (
+    <View style={styles.viewStyle}>
+      <Text style={styles.title}>Title</Text>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <TextInput
+          onEndEditing={evt => endHandleEdit(evt.nativeEvent.text)}
+          style={styles.styleCustomTextInput}
+          defaultValue={textChange}
+        />
+        <TouchableOpacity onPress={() => changeValue(textChange)}>
+          <Image
+            style={{width: 30, height: 30, marginHorizontal: 5}}
+            source={icons.ic_change}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 export default EditTemplate;

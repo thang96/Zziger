@@ -31,7 +31,11 @@ import {
   addBackgroundFront,
   addValuesFront,
 } from '../../Stores/slices/cardValuesSlice';
-
+import Orientation, {
+  OrientationLocker,
+  LANDSCAPE,
+  PORTRAIT,
+} from 'react-native-orientation-locker';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const heightViewBottom = Dimensions.get('window').height - 250;
@@ -146,6 +150,7 @@ const HomeScreen = () => {
   };
   return (
     <View style={styles.container}>
+      <OrientationLocker orientation={PORTRAIT} />
       {modalCamera && (
         <View style={styles.styleModal}>
           <CustomCamera

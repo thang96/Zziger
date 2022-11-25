@@ -42,8 +42,8 @@ function PanAndPinch(props) {
   const widthRef = useRef(width);
   const boxX = useSharedValue(0);
   const boxY = useSharedValue(0);
-  const boxHeight = useSharedValue(heightRef.current ?? 100);
-  const boxWidth = useSharedValue(widthRef.current ?? 100);
+  const boxHeight = useSharedValue(heightRef.current ?? 50);
+  const boxWidth = useSharedValue(widthRef.current ?? 400);
   const rotation = useSharedValue(0);
   const savedRotation = useSharedValue(0);
   useEffect(() => {
@@ -241,7 +241,6 @@ function PanAndPinch(props) {
                   </Animated.View>
                 </PanGestureHandler>
               )}
-
               {children}
             </Animated.View>
           </RotationGestureHandler>
