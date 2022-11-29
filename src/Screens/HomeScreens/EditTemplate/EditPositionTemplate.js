@@ -38,15 +38,6 @@ import Orientation, {
 import PanAndPinch from '../../../Components/PanAndPinch';
 import {useOrientation} from '../../../Hooks/useOrientation';
 const EditPositionTemplate = () => {
-  const isFocused = useIsFocused();
-  const [showOrien, setShowOrien] = useState(false);
-
-  const navigation = useNavigation();
-
-  const backgroundFrontStore = useSelector(
-    state => state.cardValues.backgroundFront,
-  );
-  const valuesFrontStore = useSelector(state => state.cardValues.valuesFront);
   const orientation = useOrientation();
   useEffect(() => {
     Orientation.unlockAllOrientations();
@@ -55,52 +46,66 @@ const EditPositionTemplate = () => {
     } else if (orientation == LANDSCAPE) {
       renderSizelandscape();
     }
-  }, [valuesFrontStore, backgroundFrontStore, orientation]);
+  }, [orientation]);
 
-  const [widthCard, setWidthCard] = useState(0);
-  const [heightCard, setHeightCard] = useState(0);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const backgroundFrontStore = useSelector(
+    state => state.cardValues.backgroundFront ?? [],
+  );
+  // {"height": 1042, "width": 1933}
+  const valuesFrontStore = useSelector(
+    state => state.cardValues.valuesFront ?? [],
+  );
+
+  const [sizeCard, setSizeCard] = useState({width: 100, height: 100});
   const [scale, setScale] = useState(0);
-  const [backgroundCard, setBackgroundCard] = useState(null);
-  const [values, setValues] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+
   const renderSizePortrait = () => {
     let imageWidth = Dimensions.get('window').width - 20;
     let widthCard = backgroundFrontStore[0]?.width;
     let scales = widthCard / imageWidth;
-    if (backgroundFrontStore && widthCard) {
-      setShowOrien(true);
+    if (valuesFrontStore && widthCard) {
       setScale(scales);
-      setWidthCard(backgroundFrontStore[0]?.width / scales);
-      setHeightCard(backgroundFrontStore[0]?.height / scales);
-      setBackgroundCard(backgroundFrontStore[0]?.background);
-      setValues(valuesFrontStore);
+      setSizeCard({
+        width: backgroundFrontStore[0]?.width / scales,
+        height: backgroundFrontStore[0]?.height / scales,
+      });
     }
   };
   const renderSizelandscape = () => {
     let imageWidth = Dimensions.get('window').width - 200;
     let heightCard = backgroundFrontStore[0]?.width;
     let scales = heightCard / imageWidth;
-    if (backgroundFrontStore && heightCard) {
-      setShowOrien(true);
+    if (valuesFrontStore && heightCard) {
       setScale(scales);
-      setWidthCard(backgroundFrontStore[0]?.width / scales);
-      setHeightCard(backgroundFrontStore[0]?.height / scales);
-      setBackgroundCard(backgroundFrontStore[0]?.background);
-      setValues(valuesFrontStore);
+      setSizeCard({
+        width: backgroundFrontStore[0]?.width / scales,
+        height: backgroundFrontStore[0]?.height / scales,
+      });
     }
   };
-
-  const [selectedIndex, setSelectedIndex] = useState(null);
 
   const onTogglePressed = index => {
     return () => {
       setSelectedIndex(prevIndex => (prevIndex == index ? null : index));
     };
   };
-  // const onRemove = id => {
-  //   return () => {
-  //     dispatch(removeResource(id));
-  //   };
-  // };
+  const onRemove = id => {
+    return () => {
+      dispatch(removeResource(id));
+    };
+  };
+  const updatePosition = (boxPosition, index) => {
+    // const itemArray = [...valuesFrontStore];
+    // const itemChange = {
+    //   ...itemArray[index],
+    //   x: boxPosition.x,
+    //   y: boxPosition.y,
+    // };
+    // dispatch(updateValuesFront({itemChange, index}));
+  };
   return (
     <View style={styles.container}>
       <CustomButtonLogo
@@ -112,60 +117,68 @@ const EditPositionTemplate = () => {
       <View style={styles.eachContainer}>
         <ImageBackground
           resizeMode="cover"
-          source={{uri: `data:image/png;base64,${backgroundCard}`}}
+          source={{
+            uri: `data:image/png;base64,${backgroundFrontStore[0]?.background}`,
+          }}
           style={{
-            width: widthCard,
-            height: heightCard,
+            width: sizeCard?.width,
+            height: sizeCard?.height,
             position: 'absolute',
           }}>
-          {values?.length > 0 &&
-            values.map(
-              ({color, type, font_size, x, y, text, scaleX, scaleY}, index) => {
-                return (
-                  <View key={`${uuid.v1()}`}>
-                    {type == 'text' ? (
-                      <PanAndPinch
-                        isSelected={index === selectedIndex}
-                        style={{
-                          borderWidth: selectedIndex === index ? 0.2 : 0,
-                          borderColor: 'black',
-                          zIndex: selectedIndex === index ? 9999 : 1,
-                        }}
-                        key={`${uuid.v1()}`}
-                        // height={heightCard}
-                        // width={widthCard}
-                        x={x / scale}
-                        y={y / scale}
-                        // rotate={rotate}
-                        limitationHeight={heightCard}
-                        limitationWidth={widthCard}
-                        // onRemove={onRemove(id)}
-                        onDragEnd={boxPosition => {}}
-                        onResizeEnd={boxPosition => {}}
-                        onRotateEnd={boxPosition => {}}>
-                        <TouchableOpacity
-                          activeOpacity={1}
-                          style={[
-                            StyleSheet.absoluteFill,
-                            {zIndex: 99, elevation: 99},
-                          ]}
-                          onPress={onTogglePressed(index)}>
-                          <View style={() => {}}>
-                            <Text
-                              style={{
-                                color: color,
-                                fontSize: (font_size / scale) * scaleX,
-                              }}>
-                              {text}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      </PanAndPinch>
-                    ) : null}
-                  </View>
-                );
-              },
-            )}
+          {valuesFrontStore.map(
+            (
+              {color, font_path, font_size, scaleX, scaleY, text, type, x, y},
+              index,
+            ) => {
+              return (
+                <View key={`${uuid.v1()}`}>
+                  {type == 'text' ? (
+                    <PanAndPinch
+                      isSelected={index === selectedIndex}
+                      style={{
+                        borderWidth: selectedIndex === index ? 0.2 : 0,
+                        borderColor: 'black',
+                      }}
+                      key={`${uuid.v1()}`}
+                      x={x / scale}
+                      y={y / scale}
+                      // rotate={rotate}
+                      limitationHeight={sizeCard.height}
+                      limitationWidth={sizeCard.width}
+                      // onRemove={onRemove(id)}
+                      onDragEnd={boxPosition =>
+                        updatePosition(boxPosition, index)
+                      }>
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        hitSlop={{top: 20, left: 20}}
+                        style={[
+                          StyleSheet.absoluteFill,
+                          {zIndex: 99, elevation: 99},
+                        ]}
+                        onPress={onTogglePressed(index)}>
+                        <View
+                          style={() => {
+                            return {
+                              // width: size.width,
+                              // height: size.height,
+                            };
+                          }}>
+                          <Text
+                            style={{
+                              color: color,
+                              fontSize: 14,
+                            }}>
+                            {`${text}`}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </PanAndPinch>
+                  ) : null}
+                </View>
+              );
+            },
+          )}
         </ImageBackground>
       </View>
     </View>

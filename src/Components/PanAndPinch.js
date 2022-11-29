@@ -42,8 +42,8 @@ function PanAndPinch(props) {
   const widthRef = useRef(width);
   const boxX = useSharedValue(0);
   const boxY = useSharedValue(0);
-  const boxHeight = useSharedValue(heightRef.current ?? 50);
-  const boxWidth = useSharedValue(widthRef.current ?? 400);
+  const boxHeight = useSharedValue(heightRef.current ?? 35);
+  const boxWidth = useSharedValue(widthRef.current ?? 200);
   const rotation = useSharedValue(0);
   const savedRotation = useSharedValue(0);
   useEffect(() => {

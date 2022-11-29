@@ -29,12 +29,12 @@ export const cardValuesSlice = createSlice({
     },
     updateBackgroundFront: (state, actions) => {
       const newResource = [...current(state.backgroundFront)];
-      newResource[actions.payload.index] = actions.payload.item;
+      newResource[actions.payload.index] = actions.payload.itemChange;
       state.backgroundFront = newResource;
     },
     updateBackgroundBack: (state, actions) => {
       const newResource = [...current(state.backgroundBack)];
-      newResource[actions.payload.index] = actions.payload.item;
+      newResource[actions.payload.index] = actions.payload.itemChange;
       state.backgroundBack = newResource;
     },
     updateValuesFront: (state, actions) => {
@@ -44,7 +44,7 @@ export const cardValuesSlice = createSlice({
     },
     updateValuesBack: (state, actions) => {
       const newResource = [...current(state.valuesBack)];
-      newResource[actions.payload.index] = actions.payload.item;
+      newResource[actions.payload.index] = actions.payload.itemChange;
       state.valuesBack = newResource;
     },
     removeBackgroundFront: (state, actions) => {
