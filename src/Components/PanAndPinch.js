@@ -42,8 +42,8 @@ function PanAndPinch(props) {
   const widthRef = useRef(width);
   const boxX = useSharedValue(0);
   const boxY = useSharedValue(0);
-  const boxHeight = useSharedValue(heightRef.current ?? 35);
-  const boxWidth = useSharedValue(widthRef.current ?? 200);
+  const boxHeight = useSharedValue(heightRef.current ?? 100);
+  const boxWidth = useSharedValue(widthRef.current ?? 100);
   const rotation = useSharedValue(0);
   const savedRotation = useSharedValue(0);
   useEffect(() => {
@@ -102,12 +102,12 @@ function PanAndPinch(props) {
       }
       boxWidth.value = clamp(
         ctx.boxWidth + ev.translationX,
-        30,
+        -boxWidth.value / 2,
         limitationWidth - boxX.value,
       );
       boxHeight.value = clamp(
         ctx.boxHeight + ev.translationY,
-        30,
+        -boxHeight.value / 2,
         limitationHeight - boxY.value,
       );
     },
@@ -199,54 +199,50 @@ function PanAndPinch(props) {
     [],
   );
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <PanGestureHandler onGestureEvent={gestureHandler}>
-        <Animated.View>
-          <RotationGestureHandler onGestureEvent={rotateHandler}>
-            <Animated.View style={[animatedStyle, style]}>
-              {isSelected && (
+    <PanGestureHandler onGestureEvent={gestureHandler}>
+      <Animated.View>
+        <RotationGestureHandler onGestureEvent={rotateHandler}>
+          <Animated.View style={[animatedStyle, style]}>
+            {isSelected && (
+              <View
+                style={[styles.closeBoxStyle, {width: width, height: height}]}>
                 <View
                   style={[
-                    styles.closeBoxStyle,
+                    styless.eachViewContainer,
                     {width: width, height: height},
                   ]}>
-                  <View
-                    style={[
-                      styless.eachViewContainer,
-                      {width: width, height: height},
-                    ]}>
-                    <TouchableOpacity
-                      hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                      onPress={onRemove}
-                      style={styless.close}>
-                      <Image
-                        source={closeImageSource}
-                        style={styles.imageStyle}
-                        resizeMode={'contain'}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-              {isSelected && (
-                <PanGestureHandler
-                  hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                  onGestureEvent={resizeHandler}>
-                  <Animated.View style={[styles.resizeBoxStyle]}>
+                  <TouchableOpacity
+                    hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                    onPress={onRemove}
+                    style={styless.close}>
                     <Image
-                      source={resizerImageSource}
+                      source={closeImageSource}
                       style={styles.imageStyle}
                       resizeMode={'contain'}
                     />
-                  </Animated.View>
-                </PanGestureHandler>
-              )}
-              {children}
-            </Animated.View>
-          </RotationGestureHandler>
-        </Animated.View>
-      </PanGestureHandler>
-    </GestureHandlerRootView>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            {isSelected && (
+              <PanGestureHandler
+                hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                onGestureEvent={resizeHandler}>
+                <Animated.View style={[styles.resizeBoxStyle]}>
+                  <Image
+                    source={resizerImageSource}
+                    style={styles.imageStyle}
+                    resizeMode={'contain'}
+                  />
+                </Animated.View>
+              </PanGestureHandler>
+            )}
+
+            {children}
+          </Animated.View>
+        </RotationGestureHandler>
+      </Animated.View>
+    </PanGestureHandler>
   );
 }
 const styless = StyleSheet.create({

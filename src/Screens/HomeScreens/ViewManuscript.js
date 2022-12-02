@@ -26,16 +26,26 @@ import ImagePicker from 'react-native-image-crop-picker';
 import CustomLoading from '../../Components/CustomLoading';
 import common from '../../Utils/common';
 import uuid from 'react-native-uuid';
-import {addbackOfCardStore} from '../../Stores/slices/cardSlice';
 import CustomAppbar from '../../Components/CustomAppBar';
 import CustomCamera from '../../Components/CustomCamera';
 import AICameraAPI from '../../Apis/HomeAPI/AICameraAPI/AICameraAPI';
+import {
+  addBackgroundBack,
+  addValuesBack,
+  addBackOfCard,
+} from '../../Stores/slices/cardValuesSlice';
+import rnTextSize, {TSFontSpecs} from 'react-native-text-size';
 const ViewManuscript = props => {
   const frontCardStore = useSelector(state => state.cardValues.frontCard);
   const backgroundFrontStore = useSelector(
     state => state.cardValues.backgroundFront,
   );
   const valuesFrontStore = useSelector(state => state.cardValues.valuesFront);
+  const backOfCardStore = useSelector(state => state.cardValues.backOfCard);
+  const backgroundBackStore = useSelector(
+    state => state.cardValues.backgroundBack,
+  );
+  const valuesBackStore = useSelector(state => state.cardValues.valuesBack);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isFront, setIsFront] = useState(true);
@@ -47,24 +57,43 @@ const ViewManuscript = props => {
   const [modalCamera, setModalCamera] = useState(false);
 
   useEffect(() => {
-    renderSize();
-  }, [backgroundFrontStore, valuesFrontStore]);
+    renderSizeFront();
+    renderSizeBack();
+  }, [backgroundFrontStore, valuesFrontStore, loading, backgroundBackCard]);
   const imageWidth = Dimensions.get('window').width - 20;
 
   const [widthCard, setWidthCard] = useState(0);
   const [heightCard, setHeightCard] = useState(0);
   const [scale, setScale] = useState(0);
-  const [backgroundCard, setBackgroundCard] = useState(null);
-  const [values, setValues] = useState([]);
-  const renderSize = () => {
+  const [backgroundFrontCard, setBackgroundFrontCard] = useState(null);
+  const [valuesFront, setValuesFront] = useState([]);
+
+  const [widthCardBack, setWidthCardBack] = useState(0);
+  const [heightCardBack, setHeightCardBack] = useState(0);
+  const [scaleBack, setScaleBack] = useState(0);
+  const [backgroundBackCard, setBackgroundBackCard] = useState(null);
+  const [valuesBack, setValuesBack] = useState([]);
+
+  const renderSizeFront = () => {
     let widthCard = backgroundFrontStore[0]?.width;
     let scales = widthCard / imageWidth;
     if (backgroundFrontStore && valuesFrontStore) {
       setScale(scales);
       setWidthCard(backgroundFrontStore[0]?.width / scales);
       setHeightCard(backgroundFrontStore[0]?.height / scales);
-      setBackgroundCard(backgroundFrontStore[0]?.background);
-      setValues(valuesFrontStore);
+      setBackgroundFrontCard(backgroundFrontStore[0]?.background);
+      setValuesFront(valuesFrontStore);
+    }
+  };
+  const renderSizeBack = () => {
+    let widthCardBack = backgroundBackStore[0]?.width;
+    let scales = widthCardBack / imageWidth;
+    if (backgroundBackStore && valuesBackStore) {
+      setScaleBack(scales);
+      setWidthCardBack(backgroundBackStore[0]?.width / scales);
+      setHeightCardBack(backgroundBackStore[0]?.height / scales);
+      setBackgroundBackCard(backgroundBackStore[0]?.background);
+      setValuesBack(valuesBackStore);
     }
   };
 
@@ -82,7 +111,7 @@ const ViewManuscript = props => {
           </View>
           <View style={{width: widthCard, height: heightCard}}>
             <Image
-              source={{uri: `data:image/png;base64,${frontCardStore}`}}
+              source={{uri: `${frontCardStore}`}}
               style={{width: widthCard, height: heightCard}}
               resizeMode={'cover'}
             />
@@ -99,7 +128,7 @@ const ViewManuscript = props => {
           </View>
           <View style={{width: widthCard, height: heightCard}}>
             <Image
-              source={{uri: `data:image/png;base64,${backgroundCard}`}}
+              source={{uri: `${backgroundFrontCard}`}}
               style={{
                 width: widthCard,
                 height: heightCard,
@@ -107,35 +136,36 @@ const ViewManuscript = props => {
               }}
               resizeMode={'cover'}
             />
-            {values != [] &&
-              values.map(
+            {valuesFront != [] &&
+              valuesFront.map(
                 (
                   {color, type, font_size, x, y, text, scaleX, scaleY},
                   index,
                 ) => {
-                  // console.log(x / scale, y / scale, '----------', text);
                   return (
                     <View key={`${uuid.v1()}`}>
-                      <View
-                        style={[
-                          {
-                            position: 'absolute',
-                            transform: [
-                              {translateX: x / scale},
-                              {translateY: y / scale},
-                            ],
-                          },
-                        ]}>
-                        <Text
+                      {type == 'text' ? (
+                        <View
                           style={[
                             {
-                              fontSize: (font_size / scale) * scaleX,
-                              color: color,
+                              position: 'absolute',
+                              transform: [
+                                {translateX: x / scale},
+                                {translateY: y / scale},
+                              ],
                             },
                           ]}>
-                          {text}
-                        </Text>
-                      </View>
+                          <Text
+                            style={[
+                              {
+                                fontSize: (font_size / scale) * scaleX,
+                                color: color,
+                              },
+                            ]}>
+                            {text}
+                          </Text>
+                        </View>
+                      ) : null}
                     </View>
                   );
                 },
@@ -149,26 +179,87 @@ const ViewManuscript = props => {
     return (
       <View>
         <View>
-          <View style={styles.viewRow}>
-            <Text style={styles.title}>Template</Text>
-            <CustomButton
-              title={'선택'}
-              styleText={styles.textCustomButton}
-              onPress={() => setModalSelete(true)}
-            />
-          </View>
-          {backOfCardStoreStore ? (
-            <Image
-              source={{uri: `data:image/png;base64,${backOfCardStoreStore}`}}
-              style={{width: imageWidth, height: imageWidth / 1.8}}
-              resizeMode={'cover'}
-            />
+          {backgroundBackCard ? (
+            <View>
+              <View>
+                <View style={styles.viewRow}>
+                  <Text style={styles.title}>Original Template</Text>
+                  <CustomButton
+                    title={'선택'}
+                    styleText={styles.textCustomButton}
+                    onPress={() => setModalSelete(true)}
+                  />
+                </View>
+                <View style={{width: widthCard, height: heightCard}}>
+                  <Image
+                    source={{
+                      uri: `${backOfCardStore}`,
+                    }}
+                    style={{width: widthCard, height: heightCard}}
+                    resizeMode={'cover'}
+                  />
+                </View>
+              </View>
+              <View>
+                <View style={styles.viewRow}>
+                  <Text style={styles.title}>Suggestion Template</Text>
+                  <CustomButton
+                    title={'선택'}
+                    styleText={styles.textCustomButton}
+                    onPress={() => setModalSelete(true)}
+                  />
+                </View>
+                <View style={{width: widthCardBack, height: heightCardBack}}>
+                  <Image
+                    source={{uri: `${backgroundBackCard}`}}
+                    style={{
+                      width: widthCardBack,
+                      height: heightCardBack,
+                      position: 'absolute',
+                    }}
+                    resizeMode={'cover'}
+                  />
+                  {valuesBack != [] &&
+                    valuesBack.map(
+                      (
+                        {color, type, font_size, x, y, text, scaleX, scaleY},
+                        index,
+                      ) => {
+                        return (
+                          <View key={`${uuid.v1()}`}>
+                            <View
+                              style={[
+                                {
+                                  position: 'absolute',
+                                  transform: [
+                                    {translateX: x / scaleBack},
+                                    {translateY: y / scaleBack},
+                                  ],
+                                },
+                              ]}>
+                              <Text
+                                style={[
+                                  {
+                                    fontSize: (font_size / scaleBack) * scaleX,
+                                    color: color,
+                                  },
+                                ]}>
+                                {text}
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      },
+                    )}
+                </View>
+              </View>
+            </View>
           ) : (
             <CustomButtonLogo
               source={icons.ic_rotate}
               styleButton={{
-                width: imageWidth,
-                height: imageWidth / 1.8,
+                width: widthCard,
+                height: heightCard,
                 backgroundColor: 'rgb(248,253,255)',
               }}
               onPress={() =>
@@ -180,26 +271,77 @@ const ViewManuscript = props => {
       </View>
     );
   };
-
+  const fontSpecs = {
+    fontFamily: undefined,
+    fontSize: 14,
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+  };
+  const addBackgroundBackCard = async card_img => {
+    const widthWindow = Dimensions.get('window').width * 0.9;
+    await AICameraAPI.DetailImageAPI(card_img)
+      .then(async res => {
+        if (res?.status == 200) {
+          let background = [
+            {
+              background: `data:image/png;base64,${res?.data?.namecard_info?.background[0]?.background}`,
+              width: res?.data?.namecard_info?.background[0]?.width,
+              height: res?.data?.namecard_info?.background[0]?.height,
+            },
+          ];
+          dispatch(addBackgroundBack(background));
+          let eachValue = [];
+          let listValues = res?.data?.namecard_info?.values;
+          for (let item = 0; item < listValues.length; item++) {
+            const element = listValues[item];
+            let text = element?.text;
+            const size = await rnTextSize.measure({
+              text,
+              widthWindow,
+              ...fontSpecs,
+            });
+            eachValue.push({
+              ...element,
+              rotate: 0,
+              width: size?.width,
+              height: size?.height,
+            });
+          }
+          dispatch(addValuesBack(eachValue));
+          renderSizeBack();
+          setModalCamera(false);
+          setLoading(false);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        setLoading(false);
+        setModalCamera(false);
+      });
+  };
   const openGallery = () => {
     setLoading(true);
     ImagePicker.openPicker({})
       .then(async image => {
         const imageConverted1 = await common.resizeImageNotVideo(image);
         await AICameraAPI.CutImageAPI(imageConverted1)
-          .then(res => {
+          .then(async res => {
             if (res?.status == 200 && res?.data.success == 1) {
               let card_img = res?.data?.card_img;
-              dispatch(addbackOfCardStore(card_img));
-              setLoading(false);
+              dispatch(addBackOfCard(`data:image/png;base64,${card_img}`));
+              addBackgroundBackCard(card_img);
             }
           })
           .catch(function (error) {
             console.log(error);
+            setLoading(false);
+            setModalCamera(false);
           });
       })
-      .catch(e => {
+      .catch(function (error) {
         ImagePicker.clean();
+        setLoading(false);
+        setModalCamera(false);
       });
   };
   const getPicture = async resizeImage => {
@@ -208,8 +350,8 @@ const ViewManuscript = props => {
       .then(res => {
         if (res?.status == 200 && res?.data.success == 1) {
           let card_img = res?.data?.card_img;
-          dispatch(addbackOfCardStore(card_img));
-          setLoading(false);
+          dispatch(addBackOfCard(`data:image/png;base64,${card_img}`));
+          addBackgroundBackCard(card_img);
           setModalCamera(false);
         }
       })
@@ -223,7 +365,7 @@ const ViewManuscript = props => {
   return (
     <View style={styles.container}>
       {loading && (
-        <View style={styles.viewModal}>
+        <View style={styles.styleModal}>
           <CustomLoading
             modalVisible={loading}
             onRequestClose={() => setLoading(false)}
@@ -278,7 +420,7 @@ const ViewManuscript = props => {
       {modalShowImage && (
         <View>
           <CustomModalShowImage
-            source={isFront ? frontCard : backOfCardStore}
+            source={isFront ? frontCardStore : backOfCardStore}
             modalVisible={modalShowImage}
             onRequestClose={() => {
               setModalShowImage(false);
@@ -394,13 +536,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: 'black',
-  },
-  styleModal: {
-    backgroundColor: 'rgba(119,119,119,0.7)',
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    zIndex: 9999,
   },
   styleModal: {
     backgroundColor: 'rgba(119,119,119,0.7)',

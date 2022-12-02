@@ -47,7 +47,7 @@ const CustomModalChangeColor = props => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={onRequestClose}>
-        <View style={[styles.eachContainer, {height: '50%'}]}>
+        <View style={[styles.eachContainer, {height: '55%'}]}>
           <View style={styles.viewRow}>
             <Text style={styles.title}>Color</Text>
             <CustomButtonLogo

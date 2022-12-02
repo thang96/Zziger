@@ -18,6 +18,7 @@ import 'react-native-gesture-handler';
 import Orientation from 'react-native-orientation-locker';
 const App = () => {
   useEffect(() => {
+    Orientation.lockToPortrait();
     LogBox.ignoreAllLogs();
   }, []);
   return (

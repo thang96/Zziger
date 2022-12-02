@@ -12,7 +12,7 @@ import {colors, icons} from '../Constants';
 
 const CustomModalShowImage = props => {
   const {onRequestClose, modalVisible, source, onPress} = props;
-  const widthWindow = Dimensions.get('window').width;
+  const widthWindow = Dimensions.get('window').width - 40;
   return (
     <View style={styles.container}>
       <Modal
@@ -29,7 +29,7 @@ const CustomModalShowImage = props => {
               transform: [{rotate: '90deg'}],
               flex: 1,
             }}
-            resizeMode={'cover'}
+            resizeMode={'contain'}
           />
           <TouchableOpacity onPress={onPress}>
             <Image

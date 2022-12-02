@@ -31,20 +31,19 @@ import {
   addBackgroundFront,
   addValuesFront,
 } from '../../Stores/slices/cardValuesSlice';
-import Orientation, {
-  OrientationLocker,
-  LANDSCAPE,
-  PORTRAIT,
-} from 'react-native-orientation-locker';
+import Orientation from 'react-native-orientation-locker';
+import rnTextSize, {TSFontSpecs} from 'react-native-text-size';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const heightViewBottom = Dimensions.get('window').height - 250;
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCamera, setModalCamera] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    Orientation.lockToPortrait();
     requestCameraPermission();
   }, []);
 
@@ -78,7 +77,55 @@ const HomeScreen = () => {
       navigation.navigate('ChooseTypeOfBusinessCard');
     }
   }, [files]);
-
+  const fontSpecs = {
+    fontFamily: undefined,
+    fontSize: 14,
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+  };
+  const addBackgroundFrontCard = async card_img => {
+    const widthWindow = Dimensions.get('window').width * 0.9;
+    await AICameraAPI.DetailImageAPI(card_img)
+      .then(async res => {
+        if (res?.status == 200) {
+          let background = [
+            {
+              background: `data:image/png;base64,${res?.data?.namecard_info?.background[0]?.background}`,
+              width: res?.data?.namecard_info?.background[0]?.width,
+              height: res?.data?.namecard_info?.background[0]?.height,
+            },
+          ];
+          dispatch(addBackgroundFront(background));
+          let eachValue = [];
+          let listValues = res?.data?.namecard_info?.values;
+          for (let item = 0; item < listValues.length; item++) {
+            const element = listValues[item];
+            let text = element?.text;
+            const size = await rnTextSize.measure({
+              text,
+              widthWindow,
+              ...fontSpecs,
+            });
+            eachValue.push({
+              ...element,
+              rotate: 0,
+              width: size?.width,
+              height: size?.height,
+            });
+          }
+          dispatch(addValuesFront(eachValue));
+          setLoading(false);
+          setModalCamera(false);
+          navigation.navigate('ChooseTypeOfBusinessCard');
+          // navigation.navigate('EditTemplate');
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        setLoading(false);
+        setModalCamera(false);
+      });
+  };
   const openGallery = () => {
     setLoading(true);
     ImagePicker.openPicker({})
@@ -88,25 +135,8 @@ const HomeScreen = () => {
           .then(async res => {
             if (res?.status == 200) {
               let card_img = res?.data?.card_img;
-              dispatch(addFrontCard(card_img));
-              await AICameraAPI.DetailImageAPI(card_img)
-                .then(res => {
-                  if (res?.status == 200) {
-                    dispatch(
-                      addBackgroundFront(res?.data?.namecard_info?.background),
-                    );
-                    dispatch(addValuesFront(res?.data?.namecard_info?.values));
-                    setLoading(false);
-                    setModalCamera(false);
-                    // navigation.navigate('ChooseTypeOfBusinessCard');
-                    navigation.navigate('EditTemplate');
-                  }
-                })
-                .catch(function (error) {
-                  console.log(error);
-                  setLoading(false);
-                  setModalCamera(false);
-                });
+              dispatch(addFrontCard(`data:image/png;base64,${card_img}`));
+              addBackgroundFrontCard(card_img);
             }
           })
           .catch(function (error) {
@@ -127,19 +157,8 @@ const HomeScreen = () => {
       .then(async res => {
         if (res?.status == 200 && res?.data.success == 1) {
           let card_img = res?.data?.card_img;
-          dispatch(addFrontCard(card_img));
-          navigation.navigate('ChooseTypeOfBusinessCard');
-          await AICameraAPI.DetailImageAPI(card_img)
-            .then(res => {
-              dispatch(addResource(res?.data?.namecard_info));
-              setLoading(false);
-              setModalCamera(false);
-            })
-            .catch(function (error) {
-              console.log(error);
-              setLoading(false);
-              setModalCamera(false);
-            });
+          dispatch(addFrontCard(`data:image/png;base64,${card_img}`));
+          addBackgroundFrontCard(card_img);
         }
       })
       .catch(function (error) {
@@ -150,7 +169,6 @@ const HomeScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <OrientationLocker orientation={PORTRAIT} />
       {modalCamera && (
         <View style={styles.styleModal}>
           <CustomCamera

@@ -15,6 +15,9 @@ export const cardValuesSlice = createSlice({
     addFrontCard: (state, actions) => {
       state.frontCard = actions.payload;
     },
+    addBackOfCard: (state, actions) => {
+      state.backOfCard = actions.payload;
+    },
     addBackgroundFront: (state, actions) => {
       state.backgroundFront = actions.payload;
     },
@@ -84,6 +87,7 @@ export const cardValuesSlice = createSlice({
 
 export const {
   addFrontCard,
+  addBackOfCard,
   addBackgroundFront,
   addBackgroundBack,
   addValuesFront,
