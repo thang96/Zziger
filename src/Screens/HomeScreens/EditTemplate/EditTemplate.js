@@ -111,7 +111,12 @@ const EditTemplate = props => {
         iconRight1={icons.ic_shopping}
         title={'Edit Template'}
         onPressLeftIcon={() => {
-          navigation.navigate('EditPositionTemplate');
+          let data = {
+            background: isFront ? backgroundFrontStore : backgroundBackStore,
+            values: isFront ? valuesFrontStore : valuesBackStore,
+            isFront: isFront,
+          };
+          navigation.goBack();
         }}
       />
       {loading ? (
@@ -257,7 +262,14 @@ const EditTemplate = props => {
                 setModalChangeTheme(true);
               }}
               thirdOnpress={() => {
-                navigation.navigate('EditPositionTemplate');
+                let data = {
+                  background: isFront
+                    ? backgroundFrontStore
+                    : backgroundBackStore,
+                  values: isFront ? valuesFrontStore : valuesBackStore,
+                  isFront: isFront,
+                };
+                navigation.navigate('EditPositionTemplate', data);
                 setModalSelete(false);
               }}
             />

@@ -100,78 +100,82 @@ const ViewManuscript = props => {
   const renderFrontCard = () => {
     return (
       <View>
-        <View>
-          <View style={styles.viewRow}>
-            <Text style={styles.title}>Original Template</Text>
-            <CustomButton
-              title={'선택'}
-              styleText={styles.textCustomButton}
-              onPress={() => setModalSelete(true)}
-            />
-          </View>
-          <View style={{width: widthCard, height: heightCard}}>
-            <Image
-              source={{uri: `${frontCardStore}`}}
-              style={{width: widthCard, height: heightCard}}
-              resizeMode={'cover'}
-            />
-          </View>
-        </View>
-        <View>
-          <View style={styles.viewRow}>
-            <Text style={styles.title}>Suggestion Template</Text>
-            <CustomButton
-              title={'선택'}
-              styleText={styles.textCustomButton}
-              onPress={() => setModalSelete(true)}
-            />
-          </View>
-          <View style={{width: widthCard, height: heightCard}}>
-            <Image
-              source={{uri: `${backgroundFrontCard}`}}
-              style={{
-                width: widthCard,
-                height: heightCard,
-                position: 'absolute',
-              }}
-              resizeMode={'cover'}
-            />
-            {valuesFront != [] &&
-              valuesFront.map(
-                (
-                  {color, type, font_size, x, y, text, scaleX, scaleY},
-                  index,
-                ) => {
-                  return (
-                    <View key={`${uuid.v1()}`}>
-                      {type == 'text' ? (
-                        <View
-                          style={[
-                            {
-                              position: 'absolute',
-                              transform: [
-                                {translateX: x / scale},
-                                {translateY: y / scale},
-                              ],
-                            },
-                          ]}>
-                          <Text
-                            style={[
-                              {
-                                fontSize: (font_size / scale) * scaleX,
-                                color: color,
-                              },
-                            ]}>
-                            {text}
-                          </Text>
+        {backgroundFrontCard && (
+          <View>
+            <View>
+              <View style={styles.viewRow}>
+                <Text style={styles.title}>Original Template</Text>
+                <CustomButton
+                  title={'선택'}
+                  styleText={styles.textCustomButton}
+                  onPress={() => setModalSelete(true)}
+                />
+              </View>
+              <View style={{width: widthCard, height: heightCard}}>
+                <Image
+                  source={{uri: `${frontCardStore}`}}
+                  style={{width: widthCard, height: heightCard}}
+                  resizeMode={'cover'}
+                />
+              </View>
+            </View>
+            <View>
+              <View style={styles.viewRow}>
+                <Text style={styles.title}>Suggestion Template</Text>
+                <CustomButton
+                  title={'선택'}
+                  styleText={styles.textCustomButton}
+                  onPress={() => setModalSelete(true)}
+                />
+              </View>
+              <View style={{width: widthCard, height: heightCard}}>
+                <Image
+                  source={{uri: `${backgroundFrontCard}`}}
+                  style={{
+                    width: widthCard,
+                    height: heightCard,
+                    position: 'absolute',
+                  }}
+                  resizeMode={'cover'}
+                />
+                {valuesFront != [] &&
+                  valuesFront.map(
+                    (
+                      {color, type, font_size, x, y, text, scaleX, scaleY},
+                      index,
+                    ) => {
+                      return (
+                        <View key={`${uuid.v1()}`}>
+                          {type == 'text' ? (
+                            <View
+                              style={[
+                                {
+                                  position: 'absolute',
+                                  transform: [
+                                    {translateX: x / scale},
+                                    {translateY: y / scale},
+                                  ],
+                                },
+                              ]}>
+                              <Text
+                                style={[
+                                  {
+                                    fontSize: (100 / scale) * scaleX,
+                                    color: color,
+                                  },
+                                ]}>
+                                {text}
+                              </Text>
+                            </View>
+                          ) : null}
                         </View>
-                      ) : null}
-                    </View>
-                  );
-                },
-              )}
+                      );
+                    },
+                  )}
+              </View>
+            </View>
           </View>
-        </View>
+        )}
       </View>
     );
   };

@@ -15,6 +15,7 @@ import {colors, icons, images} from '../../../Constants';
 import uuid from 'react-native-uuid';
 import {
   addBackgroundFront,
+  addValuesBack,
   addValuesFront,
   updateBackgroundFront,
   updateValuesFront,
@@ -23,19 +24,16 @@ import Orientation from 'react-native-orientation-locker';
 import PanAndPinch from '../../../Components/PanAndPinch';
 import {useOrientation} from '../../../Hooks/useOrientation';
 const EditPositionTemplate = () => {
-  Orientation.lockToLandscape();
-  const orientation = useOrientation();
+  const route = useRoute();
   const [loading, setLoading] = useState(true);
   const isFocused = useIsFocused();
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const backgroundFrontStore = useSelector(
-    state => state.cardValues.backgroundFront ?? [],
-  );
-  const valuesFrontStore = useSelector(
-    state => state.cardValues.valuesFront ?? [],
-  );
+  const backgroundFrontStore = route.params?.background ?? [];
+
+  const valuesFrontStore = route.params?.values ?? [];
+
   const [eachBackgroundFrontStore, setEachBackgroundFrontStore] = useState([]);
   const [eachValuesFrontStore, setEachValuesFrontStore] = useState([]);
 
@@ -75,6 +73,7 @@ const EditPositionTemplate = () => {
           ...element,
           x: element?.x / scales,
           y: element?.y / scales,
+          fontSize: (100 / scales) * element?.scaleX,
         };
         eachValues.push(newElement);
       }
@@ -101,6 +100,7 @@ const EditPositionTemplate = () => {
     eachValuesFrontStore[index] = itemChange;
   };
   const updateValueStore = () => {
+    let isFront = route.params?.isFront;
     let imageWidth = Dimensions.get('window').width - 200;
     let heightCard = backgroundFrontStore[0]?.width;
     let scales = heightCard / imageWidth;
@@ -114,7 +114,11 @@ const EditPositionTemplate = () => {
       };
       arrayValue.push(newElement);
     }
-    dispatch(addValuesFront(arrayValue));
+    {
+      isFront
+        ? dispatch(addValuesFront(arrayValue))
+        : dispatch(addValuesBack(arrayValue));
+    }
     navigation.goBack();
   };
   return (
