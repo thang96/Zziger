@@ -110,14 +110,7 @@ const EditTemplate = props => {
         iconRight2={icons.ic_bell}
         iconRight1={icons.ic_shopping}
         title={'Edit Template'}
-        onPressLeftIcon={() => {
-          let data = {
-            background: isFront ? backgroundFrontStore : backgroundBackStore,
-            values: isFront ? valuesFrontStore : valuesBackStore,
-            isFront: isFront,
-          };
-          navigation.goBack();
-        }}
+        onPressLeftIcon={() => navigation.goBack()}
       />
       {loading ? (
         <ActivityIndicator color={colors.backgroundButton} size={'large'} />
