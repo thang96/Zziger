@@ -67,6 +67,7 @@ export const cardValuesSlice = createSlice({
       state.backgroundBack = newResource;
     },
     removeValuesFront: (state, actions) => {
+      console.log(actions?.payload, 'payload');
       const newResource = [...current(state.valuesFront)];
       const indexSelected = newResource.findIndex(
         item => item.id === actions?.payload,

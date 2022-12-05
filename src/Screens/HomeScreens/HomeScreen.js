@@ -17,7 +17,7 @@ import {colors, icons, images} from '../../Constants';
 import {useNavigation} from '@react-navigation/native';
 import ImagePicker from 'react-native-image-crop-picker';
 import common from '../../Utils/common';
-import {uuid} from '../../Utils/uuid';
+import uuid from 'react-native-uuid';
 import CustomModalCamera from '../../Components/CustomModalCamera';
 import CustomCamera from '../../Components/CustomCamera';
 // import {postImg} from '../../Apis/HomeAPI';
@@ -98,7 +98,7 @@ const HomeScreen = () => {
           console.log('okkkkk');
           for (let item = 0; item < listValues.length; item++) {
             const element = listValues[item];
-            let idItem = `${uuid}`;
+            let idItem = `${uuid.v1()}`;
             const fontSpecs = {
               fontFamily: undefined,
               fontSize: (100 / scales) * element?.scaleX,
@@ -118,7 +118,6 @@ const HomeScreen = () => {
               height: size?.height,
               id: idItem,
             });
-            console.log('okkkkkkkkkk');
           }
           dispatch(addValuesFront(eachValue));
           setLoading(false);

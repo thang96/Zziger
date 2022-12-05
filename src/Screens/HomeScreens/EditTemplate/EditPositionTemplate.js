@@ -19,6 +19,8 @@ import {
   addValuesFront,
   updateBackgroundFront,
   updateValuesFront,
+  removeValuesFront,
+  removeValuesBack,
 } from '../../../Stores/slices/cardValuesSlice';
 import Orientation from 'react-native-orientation-locker';
 import PanAndPinch from '../../../Components/PanAndPinch';
@@ -84,8 +86,20 @@ const EditPositionTemplate = () => {
   };
   const onRemove = id => {
     return () => {
-      dispatch(removeResource(id));
+      let removeItem = [...eachValuesFrontStore];
+      let itemRemove = removeItem.findIndex(itemFind => itemFind.id === id);
+      removeItem.splice(itemRemove, 1);
+      setEachValuesFrontStore(removeItem);
     };
+  };
+  const updateSize = (boxPosition, index) => {
+    const itemArray = [...eachValuesFrontStore];
+    const itemChange = {
+      ...itemArray[index],
+      height: boxPosition.height,
+      width: boxPosition.width,
+    };
+    eachValuesFrontStore[index] = itemChange;
   };
   const updatePosition = (boxPosition, index) => {
     const itemArray = [...eachValuesFrontStore];
@@ -116,7 +130,7 @@ const EditPositionTemplate = () => {
         ? dispatch(addValuesFront(arrayValue))
         : dispatch(addValuesBack(arrayValue));
     }
-    navigation.goBack();
+    navigation.navigate('EditTemplate');
   };
   const [selectedIndex, setSelectedIndex] = useState(null);
   return (
@@ -181,7 +195,10 @@ const EditPositionTemplate = () => {
                         width={width}
                         limitationHeight={eachBackgroundFrontStore[0]?.height}
                         limitationWidth={eachBackgroundFrontStore[0]?.width}
-                        // onRemove={onRemove(id)}
+                        onRemove={onRemove(id)}
+                        onResizeEnd={boxPosition =>
+                          updateSize(boxPosition, index)
+                        }
                         onDragEnd={boxPosition =>
                           updatePosition(boxPosition, index)
                         }>

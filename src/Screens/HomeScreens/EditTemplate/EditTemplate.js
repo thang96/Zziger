@@ -102,6 +102,10 @@ const EditTemplate = props => {
       setValuesBack(valuesBackStore);
     }
   };
+  useEffect(() => {
+    renderSize();
+    renderSizeBack();
+  }, [valuesFrontStore, valuesBackStore]);
   return (
     <View style={styles.container}>
       <CustomAppbar
@@ -156,21 +160,37 @@ const EditTemplate = props => {
                   {values != [] &&
                     values.map(
                       (
-                        {color, type, font_size, x, y, text, scaleX, scaleY},
+                        {
+                          color,
+                          type,
+                          font_size,
+                          x,
+                          y,
+                          text,
+                          scaleX,
+                          scaleY,
+                          width,
+                          height,
+                        },
                         index,
                       ) => {
                         return (
-                          <View key={`${uuid.v1()}`}>
+                          <View
+                            key={`${uuid.v1()}`}
+                            style={{
+                              width: width,
+                              height: height,
+                              transform: [
+                                {translateX: x / scale},
+                                {translateY: y / scale},
+                              ],
+                              position: 'absolute',
+                            }}>
                             {type == 'text' ? (
                               <Text
                                 style={[
                                   {
                                     color: color,
-                                    transform: [
-                                      {translateX: x / scale},
-                                      {translateY: y / scale},
-                                    ],
-                                    position: 'absolute',
                                     fontSize: (100 / scale) * scaleX,
                                   },
                                 ]}>
@@ -296,7 +316,18 @@ const EditTemplate = props => {
                     values != [] &&
                     values.map(
                       (
-                        {color, type, font_size, x, y, text, scaleX, scaleY},
+                        {
+                          color,
+                          type,
+                          font_size,
+                          x,
+                          y,
+                          text,
+                          scaleX,
+                          scaleY,
+                          width,
+                          height,
+                        },
                         index,
                       ) => (
                         <View key={`${uuid.v1()}`}>
@@ -312,6 +343,8 @@ const EditTemplate = props => {
                                 text: textChange,
                                 scaleX: scaleX,
                                 scaleY: scaleY,
+                                width: width,
+                                height: height,
                               };
                               dispatch(updateValuesFront({index, itemChange}));
                             }}
