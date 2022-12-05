@@ -17,15 +17,14 @@ import {colors, icons, images} from '../../Constants';
 import {useNavigation} from '@react-navigation/native';
 import ImagePicker from 'react-native-image-crop-picker';
 import common from '../../Utils/common';
+import {uuid} from '../../Utils/uuid';
 import CustomModalCamera from '../../Components/CustomModalCamera';
 import CustomCamera from '../../Components/CustomCamera';
 // import {postImg} from '../../Apis/HomeAPI';
 import useGetShare from '../../Hooks/useGetShare';
 import CustomLoading from '../../Components/CustomLoading';
-
 import {useDispatch, useSelector} from 'react-redux';
 import AICameraAPI from '../../Apis/HomeAPI/AICameraAPI/AICameraAPI';
-import {addResource} from '../../Stores/slices/resourceSlice';
 import {
   addFrontCard,
   addBackgroundFront,
@@ -77,16 +76,14 @@ const HomeScreen = () => {
       navigation.navigate('ChooseTypeOfBusinessCard');
     }
   }, [files]);
-  const fontSpecs = {
-    fontFamily: undefined,
-    fontSize: 14,
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-  };
+
   const addBackgroundFrontCard = async card_img => {
     const widthWindow = Dimensions.get('window').width * 0.9;
+    const imageWidth = Dimensions.get('window').height - 20;
     await AICameraAPI.DetailImageAPI(card_img)
       .then(async res => {
+        let widthCard = res?.data?.namecard_info?.background[0]?.width;
+        let scales = widthCard / imageWidth;
         if (res?.status == 200) {
           let background = [
             {
@@ -98,8 +95,16 @@ const HomeScreen = () => {
           dispatch(addBackgroundFront(background));
           let eachValue = [];
           let listValues = res?.data?.namecard_info?.values;
+          console.log('okkkkk');
           for (let item = 0; item < listValues.length; item++) {
             const element = listValues[item];
+            let idItem = `${uuid}`;
+            const fontSpecs = {
+              fontFamily: undefined,
+              fontSize: (100 / scales) * element?.scaleX,
+              fontStyle: 'normal',
+              fontWeight: 'normal',
+            };
             let text = element?.text;
             const size = await rnTextSize.measure({
               text,
@@ -111,13 +116,15 @@ const HomeScreen = () => {
               rotate: 0,
               width: size?.width,
               height: size?.height,
+              id: idItem,
             });
+            console.log('okkkkkkkkkk');
           }
           dispatch(addValuesFront(eachValue));
           setLoading(false);
           setModalCamera(false);
-          navigation.navigate('ChooseTypeOfBusinessCard');
-          // navigation.navigate('EditTemplate');
+          // navigation.navigate('ChooseTypeOfBusinessCard');
+          navigation.navigate('EditTemplate');
         }
       })
       .catch(function (error) {

@@ -22,12 +22,10 @@ import {
 } from '../../../Stores/slices/cardValuesSlice';
 import Orientation from 'react-native-orientation-locker';
 import PanAndPinch from '../../../Components/PanAndPinch';
-import {useOrientation} from '../../../Hooks/useOrientation';
 const EditPositionTemplate = () => {
   const route = useRoute();
   const [loading, setLoading] = useState(true);
   const isFocused = useIsFocused();
-
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const backgroundFrontStore = route.params?.background ?? [];
@@ -49,7 +47,6 @@ const EditPositionTemplate = () => {
     }
   }, [isFocused]);
 
-  const [selectedIndex, setSelectedIndex] = useState(null);
   const renderSizelandscape = () => {
     let imageWidth = Dimensions.get('window').width - 200;
     let heightCard = backgroundFrontStore[0]?.width;
@@ -121,6 +118,7 @@ const EditPositionTemplate = () => {
     }
     navigation.goBack();
   };
+  const [selectedIndex, setSelectedIndex] = useState(null);
   return (
     <View style={styles.container}>
       <CustomButtonLogo
@@ -160,11 +158,12 @@ const EditPositionTemplate = () => {
                   height,
                   width,
                   rotate,
+                  id,
                 },
                 index,
               ) => {
                 return (
-                  <View key={`${uuid.v1()}`}>
+                  <View key={id}>
                     {type == 'text' ? (
                       <PanAndPinch
                         isSelected={index === selectedIndex}
@@ -174,7 +173,7 @@ const EditPositionTemplate = () => {
                           position: 'absolute',
                           zIndex: selectedIndex === index ? 9999 : 1,
                         }}
-                        key={`${uuid.v1()}`}
+                        key={id}
                         x={x}
                         y={y}
                         rotate={rotate}
