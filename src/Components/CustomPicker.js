@@ -19,12 +19,10 @@ const CustomPicker = props => {
       style={{
         position: 'absolute',
         width: '100%',
-        height: 150,
+        height: 250,
         zIndex: 9999,
         backgroundColor: 'white',
         bottom: 0,
-        borderWidth: 0.5,
-        borderColor: 'grey',
         borderRadius: 10,
         paddingHorizontal: 10,
       }}>
@@ -36,7 +34,7 @@ const CustomPicker = props => {
             onPress={onPress(item.value)}
             key={index}
             style={styles.button}>
-            <Text>{item.label}</Text>
+            <Text style={styles.textRender}>{item.label}</Text>
           </TouchableOpacity>
         )}
       />
@@ -49,9 +47,8 @@ const styles = StyleSheet.create({
     height: 45,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: 0.5,
-    borderColor: 'grey',
     borderRadius: 10,
   },
+  textRender: {fontSize: 16, fontWeight: 'bold', color: 'black'},
 });
 export default CustomPicker;

@@ -28,8 +28,7 @@ const OrdersScreen = props => {
   const typeCardStore = useSelector(state => state?.card?.typeCard);
   const [nameproduct, setNameproduct] = useState('');
   const [frontCard, setFrontCard] = useState(null);
-  const backOfCard =
-    Platform.OS === 'ios' ? backOfCardStore?.path : backOfCardStore?.uri;
+
   useEffect(() => {
     shareCardStore?.contentUri
       ? setFrontCard(shareCardStore?.contentUri)

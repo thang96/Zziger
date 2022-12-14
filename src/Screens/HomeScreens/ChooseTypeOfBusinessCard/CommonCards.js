@@ -42,11 +42,15 @@ const CommonCards = props => {
   };
   return (
     <View style={styles.container}>
-      <CustomPicker
-        onPress={onChangeAmount}
-        open={isChoosingAmount}
-        data={AMOUNT}
-      />
+      {isChoosingAmount && (
+        <View style={styles.viewModal}>
+          <CustomPicker
+            onPress={onChangeAmount}
+            open={isChoosingAmount}
+            data={AMOUNT}
+          />
+        </View>
+      )}
       <Image
         source={images.im_commonCard}
         resizeMode="cover"
@@ -99,11 +103,11 @@ const CommonCards = props => {
                 setRounding(prev => (prev == false ? true : false))
               }>
               {rounding ? (
-                <Image style={styles.imageCheck} source={icons.check_box} />
+                <Image style={styles.imageCheck} source={icons.ic_checkBox} />
               ) : (
                 <Image
                   style={styles.imageCheck}
-                  source={icons.check_box_empty}
+                  source={icons.ic_checkBoxEmpty}
                 />
               )}
             </TouchableOpacity>
@@ -135,8 +139,8 @@ const CommonCards = props => {
             rounding: rounding,
             price: price,
           };
-          navigation.navigate('ViewManuscript');
           dispatch(addCardRequirements(cardRequirements));
+          navigation.navigate('UploadFile');
         }}
       />
     </View>
@@ -216,6 +220,13 @@ const styles = StyleSheet.create({
     height: 20,
     marginRight: 5,
     tintColor: 'grey',
+  },
+  viewModal: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 9999,
+    position: 'absolute',
   },
 });
 export default CommonCards;

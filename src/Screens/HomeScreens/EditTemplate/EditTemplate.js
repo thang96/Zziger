@@ -28,26 +28,38 @@ import CustomModalChooseThemeTemplate from '../../../Components/CustomModalChoos
 import uuid from 'react-native-uuid';
 import {
   addValuesFront,
+  updateValuesBack,
   updateValuesFront,
 } from '../../../Stores/slices/cardValuesSlice';
 import Orientation from 'react-native-orientation-locker';
+import {log} from 'react-native-reanimated';
+import CustomModalShowImageRender from '../../../Components/CustomModalShowImageRender';
 
 const EditTemplate = props => {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
+  const [orientation, setOrientation] = useState(true);
   useEffect(() => {
     setLoading(true);
-    if (isFocused) {
-      setTimeout(() => {
-        Orientation.lockToPortrait();
-      }, 2000);
+    Orientation.unlockAllOrientations();
+    Dimensions.addEventListener('change', ({window: {width, height}}) => {
+      if (width < height) {
+        setOrientation(true);
+        setModalShowImage(false);
+      } else {
+        setOrientation(false);
+        setModalShowImage(true);
+      }
+    });
+    if (isFocused && orientation) {
       setTimeout(() => {
         renderSize();
         renderSizeBack();
         setLoading(false);
-      }, 2500);
+      }, 3000);
     }
-  }, [isFocused]);
+  }, [isFocused, orientation]);
+  const [modalShowImage, setModalShowImage] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isFront, setIsFront] = useState(true);
@@ -60,12 +72,8 @@ const EditTemplate = props => {
   );
   const valuesBackStore = useSelector(state => state.cardValues.valuesBack);
   const [modalSelete, setModalSelete] = useState(false);
-  const [editable, setEditable] = useState(false);
   const [modalChangeColor, setModalChangeColor] = useState(false);
   const [modalChangeTheme, setModalChangeTheme] = useState(false);
-  const [modalChangeValue, setModalChangeValue] = useState(true);
-  const [frontCard, setFrontCard] = useState(null);
-  const [valueChange, setValueChange] = useState('');
 
   const [widthCard, setWidthCard] = useState(0);
   const [heightCard, setHeightCard] = useState(0);
@@ -108,6 +116,18 @@ const EditTemplate = props => {
   }, [valuesFrontStore, valuesBackStore]);
   return (
     <View style={styles.container}>
+      {modalShowImage && (
+        <View style={styles.viewModal}>
+          <CustomModalShowImageRender
+            isFront={isFront}
+            modalVisible={modalShowImage}
+            onRequestClose={() => {
+              setModalShowImage(false);
+            }}
+            onPress={() => setModalShowImage(false)}
+          />
+        </View>
+      )}
       <CustomAppbar
         styleAppBar={{paddingHorizontal: 8}}
         iconLeft={icons.ic_back}
@@ -154,6 +174,7 @@ const EditTemplate = props => {
                       width: widthCard,
                       height: heightCard,
                       position: 'absolute',
+                      tintColor: 'red',
                     }}
                     resizeMode={'cover'}
                   />
@@ -296,15 +317,9 @@ const EditTemplate = props => {
                     title={'ASSIGN DESIGN'}
                     styleButton={styles.styleCustomButton}
                     styleText={styles.styleTextCustomButton}
+                    onPress={() => navigation.navigate('AssignDesign')}
                   />
-                  <CustomButton
-                    title={editable == false ? 'Edit text' : 'Save text'}
-                    styleButton={styles.styleCustomButton}
-                    styleText={styles.styleTextCustomButton}
-                    onPress={() =>
-                      setEditable(prev => (prev == false ? true : false))
-                    }
-                  />
+
                   <CustomButtonLogo
                     source={icons.ic_editModal}
                     styleButton={styles.styleIcon}
@@ -332,7 +347,6 @@ const EditTemplate = props => {
                       ) => (
                         <View key={`${uuid.v1()}`}>
                           <InputText
-                            editable={editable}
                             text={text}
                             changeValue={textChange => {
                               let itemChange = {
@@ -361,7 +375,6 @@ const EditTemplate = props => {
                       ) => (
                         <View key={`${uuid.v1()}`}>
                           <InputText
-                            editable={editable}
                             text={text}
                             changeValue={textChange => {
                               let itemChange = {
@@ -373,7 +386,13 @@ const EditTemplate = props => {
                                 scaleX: scaleX,
                                 scaleY: scaleY,
                               };
-                              dispatch(updateValuesFront({index, itemChange}));
+                              isFront
+                                ? dispatch(
+                                    updateValuesFront({index, itemChange}),
+                                  )
+                                : dispatch(
+                                    updateValuesBack({index, itemChange}),
+                                  );
                             }}
                           />
                         </View>
@@ -431,9 +450,16 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 5,
   },
+  viewModal: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgb(0,0,0)',
+    zIndex: 9999,
+    position: 'absolute',
+  },
 });
 const InputText = props => {
-  const {text, changeValue, editable} = props;
+  const {text, changeValue} = props;
   const [textChange, setTextChange] = useState('');
   const endHandleEdit = val => {
     setTextChange(val);
@@ -447,7 +473,6 @@ const InputText = props => {
       <Text style={styles.title}>Title</Text>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <TextInput
-          editable={editable}
           onEndEditing={evt => endHandleEdit(evt.nativeEvent.text)}
           style={styles.styleCustomTextInput}
           defaultValue={textChange}

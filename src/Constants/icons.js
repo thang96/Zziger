@@ -30,8 +30,12 @@ export default {
   ic_search: require('../Assets/icons/ic_search.png'),
   ic_show: require('../Assets/icons/ic_show.png'),
   ic_hidden: require('../Assets/icons/ic_hidden.png'),
-  ic_button_camera: require('../Assets/icons/ic_button_camera.png'),
+  ic_camera: require('../Assets/icons/ic_camera.png'),
   ic_button_back: require('../Assets/icons/ic_button_back.png'),
   ic_change: require('../Assets/icons/ic_change.png'),
   ic_changePosition: require('../Assets/icons/ic_changePosition.png'),
+  ic_plus: require('../Assets/icons/ic_plus.png'),
+  ic_rotateLeft: require('../Assets/icons/ic_rotateLeft.png'),
+  ic_rotateRight: require('../Assets/icons/ic_rotateRight.png'),
+  ic_editPC: require('../Assets/icons/ic_editPC.png'),
 };

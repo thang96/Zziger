@@ -31,6 +31,9 @@ const CustomModaViewManuscriptSelete = props => {
     fourthIcon,
     fourthOnpress,
     closeModal,
+    fivethTitle,
+    fiveOnpress,
+    fivethIcon,
   } = props;
   return (
     <View style={styles.container}>
@@ -95,6 +98,16 @@ const CustomModaViewManuscriptSelete = props => {
                 <Text style={styles.title}>{fourthTitle}</Text>
                 <Image
                   source={fourthIcon}
+                  resizeMode={'cover'}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            )}
+            {fivethTitle && (
+              <TouchableOpacity onPress={fiveOnpress} style={styles.button}>
+                <Text style={styles.title}>{fivethTitle}</Text>
+                <Image
+                  source={fivethIcon}
                   resizeMode={'cover'}
                   style={styles.icon}
                 />

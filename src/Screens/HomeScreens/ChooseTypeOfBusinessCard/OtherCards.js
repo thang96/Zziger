@@ -14,6 +14,8 @@ import CustomPicker from '../../../Components/CustomPicker';
 import {colors, icons, images} from '../../../Constants';
 import ChooseOption from '../../../Components/ChooseOption';
 import CustomTwoBottomButtonFuntion from '../../../Components/CustomTwoBottomButtonFuntion';
+import {addCardRequirements} from '../../../Stores/slices/cardSlice';
+import {useDispatch} from 'react-redux';
 
 const AMOUNT = Array.from(new Array(200)).map((_, index) => ({
   label: index + 1,
@@ -42,6 +44,7 @@ const OtherCards = props => {
 
   const [isChoosingAmount, setIsChoosingAmount] = useState(false);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const onChangeAmount = newAmount => {
     return () => {
       setAmount(newAmount);
@@ -245,7 +248,16 @@ const OtherCards = props => {
       <CustomTwoBottomButtonFuntion
         styleTwoButton={styles.customTwoBottomButtonFuntion}
         onPressLeft={() => navigation.goBack()}
-        onPressRight={() => navigation.navigate('ViewManuscript')}
+        onPressRight={() => {
+          let cardRequirements = {
+            paper: '일반용지',
+            size: '90mm*50mm',
+            amount: amount,
+            rounding: rounding,
+          };
+          dispatch(addCardRequirements(cardRequirements));
+          navigation.navigate('UploadFile');
+        }}
         titleLeft={'이전'}
         titleRight={'다음단계'}
         styleTextLeft={{color: 'white'}}

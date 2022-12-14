@@ -12,35 +12,25 @@ import {colors, icons} from '../Constants';
 
 const CustomModalShowImage = props => {
   const {onRequestClose, modalVisible, source, onPress} = props;
-  const widthWindow = Dimensions.get('window').width - 40;
+  const widthWindow = Dimensions.get('window').height - 40;
   return (
-    <View style={styles.container}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={onRequestClose}>
-        <View style={styles.eachContainer}>
-          <Image
-            source={{uri: source}}
-            style={{
-              width: widthWindow * 1.8,
-              height: widthWindow,
-              transform: [{rotate: '90deg'}],
-              flex: 1,
-            }}
-            resizeMode={'contain'}
-          />
-          <TouchableOpacity onPress={onPress}>
-            <Image
-              source={icons.ic_rotate}
-              style={styles.styleButtonIcon}
-              resizeMode={'cover'}
-            />
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={onRequestClose}>
+      <View style={styles.eachContainer}>
+        <Image
+          source={source ? {uri: source} : icons.ic_rotate}
+          style={{
+            width: widthWindow * 1.8,
+            height: widthWindow,
+            flex: 1,
+          }}
+          resizeMode={'contain'}
+        />
+      </View>
+    </Modal>
   );
 };
 const styles = StyleSheet.create({

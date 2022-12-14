@@ -41,11 +41,11 @@ const EditPositionTemplate = () => {
     if (isFocused) {
       setTimeout(() => {
         Orientation.lockToLandscape();
-      }, 1000);
+      }, 2000);
       setTimeout(() => {
         renderSizelandscape();
         setLoading(false);
-      }, 1500);
+      }, 3000);
     }
   }, [isFocused]);
 

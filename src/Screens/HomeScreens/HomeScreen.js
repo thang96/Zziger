@@ -95,7 +95,6 @@ const HomeScreen = () => {
           dispatch(addBackgroundFront(background));
           let eachValue = [];
           let listValues = res?.data?.namecard_info?.values;
-          console.log('okkkkk');
           for (let item = 0; item < listValues.length; item++) {
             const element = listValues[item];
             let idItem = `${uuid.v1()}`;
@@ -122,8 +121,8 @@ const HomeScreen = () => {
           dispatch(addValuesFront(eachValue));
           setLoading(false);
           setModalCamera(false);
-          // navigation.navigate('ChooseTypeOfBusinessCard');
-          navigation.navigate('EditTemplate');
+          navigation.navigate('ChooseTypeOfBusinessCard');
+          // navigation.navigate('EditTemplate');
         }
       })
       .catch(function (error) {
@@ -216,57 +215,38 @@ const HomeScreen = () => {
         style={styles.container}
         source={images.backgroundZ}
         resizeMode={'cover'}>
-        <CustomButtonLogo
-          styleButton={styles.customButtonLogo}
-          source={icons.ic_buttonCamera}
+        <TouchableOpacity
+          style={styles.customButtonLogo}
           onPress={() =>
-            setModalVisible(prev => (prev == false ? true : false))
-          }
-        />
+            // setModalVisible(prev => (prev == false ? true : false))
+            navigation.navigate('ChooseTypeOfBusinessCard')
+          }>
+          <Text style={styles.textTitle}>{'사진 찍어 \n주문하기'}</Text>
+          <View style={styles.viewTitle}>
+            <Image source={icons.ic_camera} style={styles.imageTitle} />
+          </View>
+        </TouchableOpacity>
 
         <View style={[styles.viewBottom, {height: heightViewBottom}]}>
-          <Text style={styles.title}>Build your personal brand</Text>
-          <View style={{flexDirection: 'row', marginVertical: 10}}>
-            <Image
-              source={icons.ic_star}
-              style={{height: 25, width: 25}}
-              resizeMode={'cover'}
-            />
-            <Image
-              source={icons.ic_star}
-              style={{height: 25, width: 25, marginHorizontal: 5}}
-              resizeMode={'cover'}
-            />
-            <Image
-              source={icons.ic_star}
-              style={{height: 25, width: 25}}
-              resizeMode={'cover'}
-            />
-          </View>
-          <Text
-            style={
-              styles.content
-            }>{`Lorem ipsum is simple dummy text of the printing and typesetting industry.`}</Text>
+          <Text style={[styles.title, {marginVertical: 30}]}>홍길동님</Text>
           <View style={styles.viewRow}>
-            <CustomButton
-              styleButton={styles.customButton}
-              title={'Category 1'}
-              styleText={styles.textCustomButton}
-              onPress={() => navigation.navigate('ChooseTypeOfBusinessCard')}
-            />
-            <CustomButton
-              styleButton={styles.customButton}
-              title={'Category 2'}
-              styleText={styles.textCustomButton}
-              onPress={() => setCreateImage(true)}
-            />
-            <CustomButton
-              styleButton={styles.customButton}
-              title={'Category 3'}
-              styleText={styles.textCustomButton}
-            />
+            <TouchableOpacity style={styles.customButton} onPress={() => {}}>
+              <Text style={styles.content}>명함</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.customButton} onPress={() => {}}>
+              <Text style={styles.content}>주문내역</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.customButton} onPress={() => {}}>
+              <Text style={styles.content}>시안확인</Text>
+            </TouchableOpacity>
           </View>
         </View>
+        <TouchableOpacity style={styles.buttonPlus}>
+          <Image
+            source={icons.ic_plus}
+            style={{width: 30, height: 30, tintColor: colors.backgroundButton}}
+          />
+        </TouchableOpacity>
       </ImageBackground>
     </View>
   );
@@ -281,6 +261,11 @@ const styles = StyleSheet.create({
     width: 120,
     alignSelf: 'center',
     zIndex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 30,
+    elevation: 3,
   },
   viewBottom: {
     backgroundColor: 'white',
@@ -301,25 +286,23 @@ const styles = StyleSheet.create({
   content: {
     textAlign: 'center',
     fontSize: 16,
-    width: '95%',
     color: 'grey',
   },
   viewRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 50,
     width: '100%',
     paddingHorizontal: 10,
   },
   customButton: {
-    height: 50,
+    height: 100,
     width: 100,
-    borderRadius: 10,
-    backgroundColor: colors.backgroundButton,
-  },
-  textCustomButton: {
-    color: 'white',
-    fontWeight: 'bold',
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+    zIndex: 3,
+    backgroundColor: 'white',
   },
   camera: {
     width: '100%',
@@ -333,6 +316,39 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     zIndex: 9999,
+  },
+  textTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.backgroundButton,
+    textAlign: 'center',
+  },
+  viewTitle: {
+    backgroundColor: 'white',
+    width: 30,
+    height: 30,
+    position: 'absolute',
+    bottom: -15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageTitle: {
+    width: 20,
+    height: 20,
+    tintColor: 'grey',
+  },
+  buttonPlus: {
+    borderRadius: 60,
+    width: 60,
+    height: 60,
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    backgroundColor: 'white',
+    elevation: 3,
+    zIndex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 export default HomeScreen;

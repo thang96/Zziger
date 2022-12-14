@@ -35,7 +35,7 @@ const CustomCamera = props => {
           <View style={styles.viewVertical} />
           <TouchableOpacity onPress={takePicture} style={styles.buttonCamera}>
             <Image
-              source={icons.ic_button_camera}
+              source={icons.ic_buttonCamera}
               style={{
                 width: 70,
                 height: 70,
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     alignSelf: 'center',
+    zIndex: 9999,
   },
   framesCamera: {
     width: 330,

@@ -5,9 +5,11 @@ import {
   CameraHome,
   ChooseTypeOfBusinessCard,
   TypeOfBusinessCard,
+  UploadFile,
   ViewManuscript,
   EditTemplate,
   EditPositionTemplate,
+  AssignDesign,
   OrdersScreen,
   PaymentScreen,
 } from '../../Screens';
@@ -36,6 +38,11 @@ const HomeNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name="UploadFile"
+        component={UploadFile}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name="ViewManuscript"
         component={ViewManuscript}
         options={{headerShown: false}}
@@ -48,6 +55,11 @@ const HomeNavigation = () => {
       <Stack.Screen
         name="EditPositionTemplate"
         component={EditPositionTemplate}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AssignDesign"
+        component={AssignDesign}
         options={{headerShown: false}}
       />
       <Stack.Screen

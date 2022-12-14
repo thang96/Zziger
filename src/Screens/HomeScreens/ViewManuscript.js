@@ -35,6 +35,12 @@ import {
   addBackOfCard,
 } from '../../Stores/slices/cardValuesSlice';
 import rnTextSize, {TSFontSpecs} from 'react-native-text-size';
+import CustomTwoBottomButtonFuntion from '../../Components/CustomTwoBottomButtonFuntion';
+import Orientation, {
+  useDeviceOrientationChange,
+  useOrientationChange,
+} from 'react-native-orientation-locker';
+import CustomModalShowImageRender from '../../Components/CustomModalShowImageRender';
 const ViewManuscript = props => {
   const frontCardStore = useSelector(state => state.cardValues.frontCard);
   const backgroundFrontStore = useSelector(
@@ -56,10 +62,32 @@ const ViewManuscript = props => {
   const [loading, setLoading] = useState(false);
   const [modalCamera, setModalCamera] = useState(false);
 
+  const [orientation, setOrientation] = useState(true);
+
   useEffect(() => {
     renderSizeFront();
     renderSizeBack();
-  }, [backgroundFrontStore, valuesFrontStore, loading, backgroundBackCard]);
+  }, [
+    backgroundFrontStore,
+    valuesFrontStore,
+    loading,
+    backgroundBackCard,
+    orientation,
+  ]);
+
+  useEffect(() => {
+    Orientation.unlockAllOrientations();
+
+    Dimensions.addEventListener('change', ({window: {width, height}}) => {
+      if (width < height) {
+        setOrientation(true);
+        setModalShowImage(false);
+      } else {
+        setOrientation(false);
+        setModalShowImage(true);
+      }
+    });
+  }, [orientation]);
   const imageWidth = Dimensions.get('window').width - 20;
 
   const [widthCard, setWidthCard] = useState(0);
@@ -104,8 +132,8 @@ const ViewManuscript = props => {
           <View>
             <View>
               <View style={styles.viewRow}>
-                <Text style={styles.title}>Original Template</Text>
                 <CustomButton
+                  styleButton={styles.styleButton}
                   title={'선택'}
                   styleText={styles.textCustomButton}
                   onPress={() => setModalSelete(true)}
@@ -120,14 +148,7 @@ const ViewManuscript = props => {
               </View>
             </View>
             <View>
-              <View style={styles.viewRow}>
-                <Text style={styles.title}>Suggestion Template</Text>
-                <CustomButton
-                  title={'선택'}
-                  styleText={styles.textCustomButton}
-                  onPress={() => setModalSelete(true)}
-                />
-              </View>
+              <View style={{height: 50}}></View>
               <View style={{width: widthCard, height: heightCard}}>
                 <Image
                   source={{uri: `${backgroundFrontCard}`}}
@@ -187,8 +208,8 @@ const ViewManuscript = props => {
             <View>
               <View>
                 <View style={styles.viewRow}>
-                  <Text style={styles.title}>Original Template</Text>
                   <CustomButton
+                    styleButton={styles.styleButton}
                     title={'선택'}
                     styleText={styles.textCustomButton}
                     onPress={() => setModalSelete(true)}
@@ -205,14 +226,7 @@ const ViewManuscript = props => {
                 </View>
               </View>
               <View>
-                <View style={styles.viewRow}>
-                  <Text style={styles.title}>Suggestion Template</Text>
-                  <CustomButton
-                    title={'선택'}
-                    styleText={styles.textCustomButton}
-                    onPress={() => setModalSelete(true)}
-                  />
-                </View>
+                <View style={{height: 50}}></View>
                 <View style={{width: widthCardBack, height: heightCardBack}}>
                   <Image
                     source={{uri: `${backgroundBackCard}`}}
@@ -422,9 +436,9 @@ const ViewManuscript = props => {
         </View>
       )}
       {modalShowImage && (
-        <View>
-          <CustomModalShowImage
-            source={isFront ? frontCardStore : backOfCardStore}
+        <View style={styles.viewModal}>
+          <CustomModalShowImageRender
+            isFront={isFront}
             modalVisible={modalShowImage}
             onRequestClose={() => {
               setModalShowImage(false);
@@ -444,8 +458,8 @@ const ViewManuscript = props => {
             thirdTitle={'Record images'}
             thirdIcon={icons.ic_cameraModal}
             secondIconTop={icons.ic_checkGreen}
-            fourthTitle={'Rotate'}
-            fourthIcon={icons.ic_rotate}
+            fivethTitle={'Edit in PC'}
+            fivethIcon={icons.ic_editPC}
             modalVisible={modalSelete}
             onRequestClose={() => setModalSelete(false)}
             closeModal={() => setModalSelete(false)}
@@ -460,8 +474,8 @@ const ViewManuscript = props => {
             thirdOnpress={() => {
               setModalSelete(false);
             }}
-            fourthOnpress={() => {
-              setModalShowImage(true);
+            fiveOnpress={() => {
+              setModalSelete(false);
             }}
           />
         </View>
@@ -480,6 +494,12 @@ const ViewManuscript = props => {
           titleLeft={'Front'}
           titleRight={'Back'}
           styleTwoButton={{height: 40}}
+          styleTextLeft={{
+            color: isFront ? 'white' : 'grey',
+          }}
+          styleTextRight={{
+            color: !isFront ? 'white' : 'grey',
+          }}
           styleButtonLeft={[
             {
               backgroundColor: isFront
@@ -539,7 +559,13 @@ const styles = StyleSheet.create({
   textCustomButton: {
     fontSize: 16,
     fontWeight: '500',
-    color: 'black',
+    color: 'white',
+  },
+  styleButton: {
+    height: 35,
+    backgroundColor: 'rgba(237,125,49,255)',
+    width: 70,
+    borderRadius: 10,
   },
   styleModal: {
     backgroundColor: 'rgba(119,119,119,0.7)',
@@ -547,6 +573,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     zIndex: 9999,
+  },
+  viewModal: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgb(0,0,0)',
+    // backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 9999,
+    position: 'absolute',
   },
 });
 export default ViewManuscript;
