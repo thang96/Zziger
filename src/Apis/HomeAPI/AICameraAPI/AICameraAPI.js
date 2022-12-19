@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 const CutImageAPI = img => {
   let formData = new FormData();
   const imageJSON = {
@@ -13,6 +14,7 @@ const CutImageAPI = img => {
       'Content-Type': 'multipart/form-data',
     },
   };
+
   return new Promise((resole, reject) => {
     axios
       .post('http://210.245.51.29:8001/get_card_region', formData, config)
@@ -44,5 +46,7 @@ const DetailImageAPI = img => {
       });
   });
 };
+
 const AICameraAPI = {CutImageAPI, DetailImageAPI};
+
 export default AICameraAPI;

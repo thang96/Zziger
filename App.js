@@ -23,7 +23,7 @@ const App = () => {
   }, []);
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar hidden />
+      <StatusBar hidden={true} />
       <GestureHandlerRootView style={styles.container}>
         <Provider store={store}>
           <NavigationContainer>

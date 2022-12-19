@@ -33,6 +33,9 @@ import {
   addBackgroundBack,
   addValuesBack,
   addBackOfCard,
+  addValuesFront,
+  addFrontCard,
+  addBackgroundFront,
 } from '../../Stores/slices/cardValuesSlice';
 import rnTextSize, {TSFontSpecs} from 'react-native-text-size';
 import CustomTwoBottomButtonFuntion from '../../Components/CustomTwoBottomButtonFuntion';
@@ -60,6 +63,7 @@ const ViewManuscript = props => {
   const [modalNotify, setModalNotify] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [getValue, setGetValue] = useState(false);
   const [modalCamera, setModalCamera] = useState(false);
 
   const [orientation, setOrientation] = useState(true);
@@ -67,12 +71,17 @@ const ViewManuscript = props => {
   useEffect(() => {
     renderSizeFront();
     renderSizeBack();
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, [
     backgroundFrontStore,
     valuesFrontStore,
-    loading,
-    backgroundBackCard,
+    valuesBackStore,
+    backgroundBackStore,
     orientation,
+    loading,
+    getValue,
   ]);
 
   useEffect(() => {
@@ -124,7 +133,6 @@ const ViewManuscript = props => {
       setValuesBack(valuesBackStore);
     }
   };
-
   const renderFrontCard = () => {
     return (
       <View>
@@ -156,6 +164,7 @@ const ViewManuscript = props => {
                     width: widthCard,
                     height: heightCard,
                     position: 'absolute',
+                    tintColor: backgroundFrontStore[0]?.tintColor,
                   }}
                   resizeMode={'cover'}
                 />
@@ -234,6 +243,7 @@ const ViewManuscript = props => {
                       width: widthCardBack,
                       height: heightCardBack,
                       position: 'absolute',
+                      tintColor: backgroundBackStore[0]?.tintColor,
                     }}
                     resizeMode={'cover'}
                   />
@@ -295,7 +305,7 @@ const ViewManuscript = props => {
     fontStyle: 'normal',
     fontWeight: 'normal',
   };
-  const addBackgroundBackCard = async card_img => {
+  const addBackgroundCard = async card_img => {
     const widthWindow = Dimensions.get('window').width * 0.9;
     await AICameraAPI.DetailImageAPI(card_img)
       .then(async res => {
@@ -305,9 +315,12 @@ const ViewManuscript = props => {
               background: `data:image/png;base64,${res?.data?.namecard_info?.background[0]?.background}`,
               width: res?.data?.namecard_info?.background[0]?.width,
               height: res?.data?.namecard_info?.background[0]?.height,
+              tintColor: 'rgba(0,0,0,0)',
             },
           ];
-          dispatch(addBackgroundBack(background));
+          isFront
+            ? dispatch(addBackgroundFront(background))
+            : dispatch(addBackgroundBack(background));
           let eachValue = [];
           let listValues = res?.data?.namecard_info?.values;
           for (let item = 0; item < listValues.length; item++) {
@@ -325,20 +338,22 @@ const ViewManuscript = props => {
               height: size?.height,
             });
           }
-          dispatch(addValuesBack(eachValue));
+          isFront
+            ? dispatch(addValuesFront(eachValue))
+            : dispatch(addValuesBack(eachValue));
           renderSizeBack();
           setModalCamera(false);
-          setLoading(false);
+          setGetValue(false);
         }
       })
       .catch(function (error) {
         console.log(error);
-        setLoading(false);
+        setGetValue(false);
         setModalCamera(false);
       });
   };
   const openGallery = () => {
-    setLoading(true);
+    setGetValue(true);
     ImagePicker.openPicker({})
       .then(async image => {
         const imageConverted1 = await common.resizeImageNotVideo(image);
@@ -346,36 +361,38 @@ const ViewManuscript = props => {
           .then(async res => {
             if (res?.status == 200 && res?.data.success == 1) {
               let card_img = res?.data?.card_img;
-              dispatch(addBackOfCard(`data:image/png;base64,${card_img}`));
-              addBackgroundBackCard(card_img);
+              isFront
+                ? dispatch(addFrontCard(`data:image/png;base64,${card_img}`))
+                : dispatch(addBackOfCard(`data:image/png;base64,${card_img}`));
+              addBackgroundCard(card_img);
             }
           })
           .catch(function (error) {
             console.log(error);
-            setLoading(false);
+            setGetValue(false);
             setModalCamera(false);
           });
       })
       .catch(function (error) {
         ImagePicker.clean();
-        setLoading(false);
+        setGetValue(false);
         setModalCamera(false);
       });
   };
   const getPicture = async resizeImage => {
-    setLoading(true);
+    setGetValue(true);
     await AICameraAPI.CutImageAPI(resizeImage)
       .then(res => {
         if (res?.status == 200 && res?.data.success == 1) {
           let card_img = res?.data?.card_img;
-          dispatch(addBackOfCard(`data:image/png;base64,${card_img}`));
-          addBackgroundBackCard(card_img);
+          addValueImage(card_img);
+          addBackgroundCard(card_img);
           setModalCamera(false);
         }
       })
       .catch(function (error) {
         console.log(error);
-        setLoading(false);
+        setGetValue(false);
         setModalCamera(false);
       });
   };
@@ -387,6 +404,14 @@ const ViewManuscript = props => {
           <CustomLoading
             modalVisible={loading}
             onRequestClose={() => setLoading(false)}
+          />
+        </View>
+      )}
+      {getValue && (
+        <View style={styles.styleModal}>
+          <CustomLoading
+            modalVisible={getValue}
+            onRequestClose={() => setGetValue(false)}
           />
         </View>
       )}
@@ -438,6 +463,7 @@ const ViewManuscript = props => {
       {modalShowImage && (
         <View style={styles.viewModal}>
           <CustomModalShowImageRender
+            isShow={modalShowImage}
             isFront={isFront}
             modalVisible={modalShowImage}
             onRequestClose={() => {
@@ -473,6 +499,7 @@ const ViewManuscript = props => {
             }}
             thirdOnpress={() => {
               setModalSelete(false);
+              setModalVisible(true);
             }}
             fiveOnpress={() => {
               setModalSelete(false);

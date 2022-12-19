@@ -1,4 +1,5 @@
 import React from 'react';
+import {useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,26 +12,29 @@ import {
 import {colors, icons} from '../Constants';
 
 const CustomModalShowImage = props => {
-  const {onRequestClose, modalVisible, source, onPress} = props;
+  const {onRequestClose, modalVisible, source, isShow} = props;
   const widthWindow = Dimensions.get('window').height - 40;
+  if (!isShow) {
+    return null;
+  }
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={onRequestClose}>
-      <View style={styles.eachContainer}>
-        <Image
-          source={source ? {uri: source} : icons.ic_rotate}
-          style={{
-            width: widthWindow * 1.8,
-            height: widthWindow,
-            flex: 1,
-          }}
-          resizeMode={'contain'}
-        />
-      </View>
-    </Modal>
+    // <Modal
+    //   animationType="fade"
+    //   transparent={true}
+    //   visible={modalVisible}
+    //   onRequestClose={onRequestClose}>
+    <View style={styles.eachContainer}>
+      <Image
+        source={source ? {uri: source} : icons.ic_rotate}
+        style={{
+          width: widthWindow * 1.8,
+          height: widthWindow,
+          flex: 1,
+        }}
+        resizeMode={'contain'}
+      />
+    </View>
+    // </Modal>
   );
 };
 const styles = StyleSheet.create({

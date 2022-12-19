@@ -20,48 +20,85 @@ import CustomTwoBottomButtonFuntion from './CustomTwoBottomButtonFuntion';
 const FAKE_DATA = [
   {
     title: 'Template 01',
-    frontCard: images.im_commonCard,
-    backOfCard: images.im_otherCard,
+    listCard: [
+      {
+        uri: 'https://icp-vn.com/wp-content/uploads/2017/06/in-card-vist-1-min.jpeg',
+      },
+      {
+        uri: 'https://vietadv.net/wp-content/uploads/2021/05/Card-visit-la-gi.png',
+      },
+      {uri: 'https://intphcm.com/data/upload/mau-card-visit-giam-doc-dep.jpg'},
+      {
+        uri: 'https://incucdep.com/wp-content/uploads/2017/05/card-visit-cao-cap-08.jpg',
+      },
+    ],
   },
   {
     title: 'Template 02',
-    frontCard: images.im_otherCard,
-    backOfCard: images.im_commonCard,
+    listCard: [
+      {
+        uri: 'https://icp-vn.com/wp-content/uploads/2017/06/in-card-vist-1-min.jpeg',
+      },
+      {
+        uri: 'https://vietadv.net/wp-content/uploads/2021/05/Card-visit-la-gi.png',
+      },
+      {uri: 'https://intphcm.com/data/upload/mau-card-visit-giam-doc-dep.jpg'},
+      {
+        uri: 'https://incucdep.com/wp-content/uploads/2017/05/card-visit-cao-cap-08.jpg',
+      },
+    ],
   },
   {
     title: 'Template 03',
-    frontCard: images.backgroundZ,
-    backOfCard: images.background,
+    listCard: [
+      {
+        uri: 'https://icp-vn.com/wp-content/uploads/2017/06/in-card-vist-1-min.jpeg',
+      },
+      {
+        uri: 'https://vietadv.net/wp-content/uploads/2021/05/Card-visit-la-gi.png',
+      },
+      {uri: 'https://intphcm.com/data/upload/mau-card-visit-giam-doc-dep.jpg'},
+      {
+        uri: 'https://incucdep.com/wp-content/uploads/2017/05/card-visit-cao-cap-08.jpg',
+      },
+    ],
   },
 ];
 const CustomModalChooseThemeTemplate = props => {
   const imageWidth = Dimensions.get('window').width - 20;
-  const widthWindow = Dimensions.get('window').width - 20;
-  const widthHeight = Dimensions.get('window').height;
-  const heightIMG = widthWindow / 1.8;
-  const {modalVisible, onRequestClose, closeModal} = props;
+  const {modalVisible, onRequestClose, closeModal, changeImage} = props;
   const [showDetail, setShowDetail] = useState(false);
 
-  const [detailCard, setDetailCard] = useState(null);
+  const [detailTemplate, setDetailTemplate] = useState(null);
 
   const renderItemCard = (item, index) => {
     return (
-      <View style={{marginBottom: 15}}>
+      <View style={{marginBottom: 20}}>
         <View style={[styles.viewRowRender, {marginBottom: 5}]}>
           <Text style={styles.titleRender}>{item.title}</Text>
           <CustomButton
             title={'More'}
             styleText={styles.styleTextMore}
             onPress={() => {
-              setDetailCard(item);
+              setDetailTemplate(item);
               setShowDetail(true);
             }}
           />
         </View>
-        <View style={styles.viewRowRender}>
-          <Image source={item.frontCard} style={styles.imageRender} />
-          <Image source={item.backOfCard} style={styles.imageRender} />
-        </View>
+        <ScrollView horizontal>
+          {item?.listCard.map(imageValue => {
+            return (
+              <TouchableOpacity
+                key={imageValue?.uri}
+                onPress={() => changeImage(imageValue?.uri)}>
+                <Image
+                  source={{uri: imageValue?.uri}}
+                  style={styles.imageRender}
+                />
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       </View>
     );
   };
@@ -73,16 +110,16 @@ const CustomModalChooseThemeTemplate = props => {
         visible={modalVisible}
         onRequestClose={onRequestClose}>
         <View style={[styles.eachContainer, {height: '55%'}]}>
-          <View style={styles.viewRow}>
-            <Text style={styles.title}>Theme Template</Text>
-            <CustomButtonLogo
-              source={icons.ic_closeRed}
-              styleButton={{width: 25, height: 25}}
-              onPress={closeModal}
-            />
-          </View>
           {!showDetail ? (
             <View style={styles.viewListItem}>
+              <View style={styles.viewRow}>
+                <Text style={styles.title}>Theme Template</Text>
+                <CustomButtonLogo
+                  source={icons.ic_closeRed}
+                  styleButton={{width: 25, height: 25}}
+                  onPress={closeModal}
+                />
+              </View>
               <CustomTextInput
                 disabled={false}
                 image={icons.ic_search}
@@ -91,30 +128,49 @@ const CustomModalChooseThemeTemplate = props => {
               />
               <FlatList
                 data={FAKE_DATA}
-                keyExtractor={uuid}
+                keyExtractor={key => key?.title}
                 renderItem={({item, index}) => renderItemCard(item, index)}
               />
             </View>
           ) : (
-            <ScrollView style={styles.viewListItem}>
-              <Image
-                source={detailCard.frontCard}
-                style={{
-                  width: imageWidth,
-                  height: imageWidth / 1.8,
-                  borderRadius: 10,
-                  marginVertical: 10,
-                }}
-              />
-              <Image
-                source={detailCard.backOfCard}
-                style={{
-                  width: imageWidth,
-                  height: imageWidth / 1.8,
-                  borderRadius: 10,
-                }}
-              />
-              <CustomTwoBottomButtonFuntion
+            <View style={styles.viewListItem}>
+              <View style={styles.viewRow}>
+                <View style={styles.viewRowRender}>
+                  <CustomButtonLogo
+                    onPress={() => setShowDetail(false)}
+                    source={icons.ic_back}
+                    styleButton={{width: 25, height: 25, marginRight: 50}}
+                  />
+                  <Text style={styles.title}>{detailTemplate?.title}</Text>
+                </View>
+
+                <CustomButtonLogo
+                  source={icons.ic_closeRed}
+                  styleButton={{width: 25, height: 25}}
+                  onPress={closeModal}
+                />
+              </View>
+              <ScrollView>
+                {detailTemplate?.listCard.map(item => {
+                  return (
+                    <TouchableOpacity
+                      key={item?.uri}
+                      onPress={() => changeImage(item?.uri)}>
+                      <Image
+                        source={{uri: item?.uri}}
+                        style={{
+                          width: imageWidth,
+                          height: imageWidth / 1.8,
+                          borderRadius: 10,
+                          marginVertical: 15,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+
+              {/* <CustomTwoBottomButtonFuntion
                 styleTwoButton={{height: 50, marginTop: 20}}
                 titleLeft={'Back'}
                 titleRight={'Apply'}
@@ -124,8 +180,8 @@ const CustomModalChooseThemeTemplate = props => {
                 styleButtonRight={{backgroundColor: colors.backgroundButton}}
                 onPressLeft={() => setShowDetail(false)}
                 onPressRight={() => {}}
-              />
-            </ScrollView>
+              /> */}
+            </View>
           )}
         </View>
       </Modal>
@@ -169,13 +225,18 @@ const styles = StyleSheet.create({
     width: '100%',
     marginVertical: 10,
   },
+  titleRender: {fontSize: 16, fontWeight: 'bold', color: 'black'},
+  imageRender: {
+    borderRadius: 10,
+    width: 160,
+    height: 160 / 1.8,
+    marginRight: 5,
+  },
+  styleTextMore: {color: colors.backgroundButtonGreen, fontSize: 15},
   viewRowRender: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  titleRender: {fontSize: 16, fontWeight: 'bold', color: 'black'},
-  imageRender: {borderRadius: 10, width: 160, height: 160 / 1.8},
-  styleTextMore: {color: colors.backgroundButtonGreen, fontSize: 15},
 });
 export default CustomModalChooseThemeTemplate;

@@ -42,7 +42,6 @@ const HomeScreen = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    Orientation.lockToPortrait();
     requestCameraPermission();
   }, []);
 

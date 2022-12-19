@@ -15,7 +15,7 @@ import {colors, icons} from '../Constants';
 
 const CustomModalShowImageRender = props => {
   const [loading, setLoading] = useState(true);
-  const {onRequestClose, modalVisible, isFront, onPress} = props;
+  const {onRequestClose, modalVisible, isFront, isShow} = props;
   const [eachBackground, setEachBackground] = useState([]);
   const [eachValues, setEachValues] = useState([]);
   const [resizeBackground, setResizeBackground] = useState([]);
@@ -41,7 +41,7 @@ const CustomModalShowImageRender = props => {
     renderSizelandscape();
     setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, 200);
   }, []);
   useEffect(() => {
     renderSizelandscape();
@@ -78,12 +78,14 @@ const CustomModalShowImageRender = props => {
       setResizeValues(eachValue);
     }
   };
+
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={onRequestClose}>
+    // <Modal
+    //   animationType="fade"
+    //   transparent={true}
+    //   visible={modalVisible}
+    //   onRequestClose={onRequestClose}>
+    <View style={styles.container}>
       <View style={styles.eachContainer}>
         {loading ? (
           <ActivityIndicator size={'large'} color={colors.backgroundButton} />
@@ -151,7 +153,9 @@ const CustomModalShowImageRender = props => {
           </ImageBackground>
         )}
       </View>
-    </Modal>
+    </View>
+
+    // </Modal>
   );
 };
 const styles = StyleSheet.create({
@@ -166,6 +170,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
+    zIndex: 999,
+    position: 'absolute',
   },
 });
 export default CustomModalShowImageRender;

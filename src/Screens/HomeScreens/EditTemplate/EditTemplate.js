@@ -27,39 +27,59 @@ import CustomModalChangeColor from '../../../Components/CustomModalChangeColor';
 import CustomModalChooseThemeTemplate from '../../../Components/CustomModalChooseThemeTemplate';
 import uuid from 'react-native-uuid';
 import {
+  addBackgroundBack,
+  addBackgroundFront,
   addValuesFront,
+  updateBackgroundBack,
+  updateBackgroundFront,
   updateValuesBack,
   updateValuesFront,
 } from '../../../Stores/slices/cardValuesSlice';
 import Orientation from 'react-native-orientation-locker';
-import {log} from 'react-native-reanimated';
 import CustomModalShowImageRender from '../../../Components/CustomModalShowImageRender';
+import LinearGradient from 'react-native-linear-gradient';
+import MaskedView from '@react-native-community/masked-view';
+
+const GradientText = props => {
+  return (
+    <MaskedView maskElement={<Text {...props} />}>
+      <LinearGradient
+        colors={props?.listColor}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}>
+        <Text {...props} style={[props?.style, {opacity: 0}]} />
+      </LinearGradient>
+    </MaskedView>
+  );
+};
 
 const EditTemplate = props => {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [orientation, setOrientation] = useState(true);
   useEffect(() => {
-    setLoading(true);
     Orientation.unlockAllOrientations();
-    Dimensions.addEventListener('change', ({window: {width, height}}) => {
-      if (width < height) {
-        setOrientation(true);
-        setModalShowImage(false);
-      } else {
-        setOrientation(false);
-        setModalShowImage(true);
-      }
-    });
+    setLoading(true);
     if (isFocused && orientation) {
       setTimeout(() => {
         renderSize();
         renderSizeBack();
         setLoading(false);
-      }, 3000);
+      }, 1000);
     }
-  }, [isFocused, orientation]);
-  const [modalShowImage, setModalShowImage] = useState(false);
+  }, [isFocused == true, orientation]);
+  useEffect(() => {
+    Dimensions.addEventListener('change', ({window: {width, height}}) => {
+      if (width < height) {
+        setOrientation(true);
+        setmodalShowImageRender(false);
+      } else {
+        setOrientation(false);
+        setmodalShowImageRender(true);
+      }
+    });
+  }, [orientation]);
+  const [modalShowImageRender, setmodalShowImageRender] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isFront, setIsFront] = useState(true);
@@ -113,18 +133,24 @@ const EditTemplate = props => {
   useEffect(() => {
     renderSize();
     renderSizeBack();
-  }, [valuesFrontStore, valuesBackStore]);
+  }, [
+    valuesFrontStore,
+    valuesBackStore,
+    backgroundBackStore,
+    backgroundFrontStore,
+  ]);
+
   return (
     <View style={styles.container}>
-      {modalShowImage && (
+      {modalShowImageRender && (
         <View style={styles.viewModal}>
           <CustomModalShowImageRender
             isFront={isFront}
-            modalVisible={modalShowImage}
+            modalVisible={modalShowImageRender}
             onRequestClose={() => {
-              setModalShowImage(false);
+              setmodalShowImageRender(false);
             }}
-            onPress={() => setModalShowImage(false)}
+            onPress={() => setmodalShowImageRender(false)}
           />
         </View>
       )}
@@ -168,16 +194,29 @@ const EditTemplate = props => {
               />
               {isFront ? (
                 <View style={{width: widthCard, height: heightCard}}>
-                  <Image
-                    source={{uri: `${backgroundCard}`}}
-                    style={{
-                      width: widthCard,
-                      height: heightCard,
-                      position: 'absolute',
-                      tintColor: 'red',
-                    }}
-                    resizeMode={'cover'}
-                  />
+                  {backgroundFrontStore[0]?.tintColor ? (
+                    <Image
+                      source={{uri: `${backgroundCard}`}}
+                      style={{
+                        width: widthCard,
+                        height: heightCard,
+                        position: 'absolute',
+                        tintColor: `${backgroundFrontStore[0]?.tintColor}`,
+                      }}
+                      resizeMode={'cover'}
+                    />
+                  ) : (
+                    <Image
+                      source={{uri: `${backgroundCard}`}}
+                      style={{
+                        width: widthCard,
+                        height: heightCard,
+                        position: 'absolute',
+                      }}
+                      resizeMode={'cover'}
+                    />
+                  )}
+
                   {values != [] &&
                     values.map(
                       (
@@ -208,15 +247,11 @@ const EditTemplate = props => {
                               position: 'absolute',
                             }}>
                             {type == 'text' ? (
-                              <Text
-                                style={[
-                                  {
-                                    color: color,
-                                    fontSize: (100 / scale) * scaleX,
-                                  },
-                                ]}>
+                              <GradientText
+                                listColor={['blue', 'red']}
+                                style={{fontSize: (100 / scale) * scaleX}}>
                                 {text}
-                              </Text>
+                              </GradientText>
                             ) : null}
                           </View>
                         );
@@ -226,11 +261,12 @@ const EditTemplate = props => {
               ) : (
                 <View style={{width: widthCardBack, height: heightCardBack}}>
                   <Image
-                    source={{uri: `${backgroundCardBack}`}}
+                    source={{uri: backgroundCard}}
                     style={{
                       width: widthCardBack,
                       height: heightCardBack,
                       position: 'absolute',
+                      tintColor: backgroundBackStore[0]?.tintColor,
                     }}
                     resizeMode={'cover'}
                   />
@@ -269,11 +305,30 @@ const EditTemplate = props => {
               modalVisible={modalChangeColor}
               onRequestClose={() => setModalChangeColor(false)}
               closeModal={() => setModalChangeColor(false)}
+              changeColor={color => {
+                let itemChange = {...backgroundFrontStore[0], tintColor: color};
+                let index = 0;
+                isFront
+                  ? dispatch(updateBackgroundFront({itemChange, index}))
+                  : dispatch(updateBackgroundBack(itemChange));
+              }}
             />
             <CustomModalChooseThemeTemplate
               modalVisible={modalChangeTheme}
               onRequestClose={() => setModalChangeTheme(false)}
               closeModal={() => setModalChangeTheme(false)}
+              changeImage={image => {
+                console.log(image);
+                let itemChange = {
+                  ...backgroundFrontStore[0],
+                  background: image,
+                  tintColor: undefined,
+                };
+                let index = 0;
+                isFront
+                  ? dispatch(updateBackgroundFront({itemChange, index}))
+                  : dispatch(updateBackgroundBack(itemChange));
+              }}
             />
             <CustomModaViewManuscriptSelete
               titleTop={'Edit'}
@@ -453,8 +508,8 @@ const styles = StyleSheet.create({
   viewModal: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgb(0,0,0)',
-    zIndex: 9999,
+    backgroundColor: 'white',
+    zIndex: 99,
     position: 'absolute',
   },
 });

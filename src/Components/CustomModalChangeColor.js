@@ -13,30 +13,21 @@ import {useSelector} from 'react-redux';
 import {colors, icons} from '../Constants';
 import CustomButtonLogo from './CustomButtonLogo';
 import {uuid} from '../Utils/uuid';
-const FAKE_DATA_COLOR_ITEM = [
-  {key: 1, value: 'rgb(119,119,119)'},
-  {key: 2, value: 'rgb(226,119,119)'},
-  {key: 3, value: 'rgb(40,225,2)'},
-  {key: 4, value: 'rgb(1,119,5)'},
-  {key: 5, value: 'rgb(22,119,119)'},
-];
 const CustomModalChangeColor = props => {
-  const widthWindow = Dimensions.get('window').width - 20;
-  const widthHeight = Dimensions.get('window').height;
-  const heightIMG = widthWindow / 1.8;
-  const {modalVisible, onRequestClose, closeModal} = props;
+  const {modalVisible, onRequestClose, closeModal, changeColor} = props;
+  const backgroundBackStore = useSelector(
+    state => state.cardValues.backgroundBack,
+  );
+  const backgroundFrontStore = useSelector(
+    state => state.cardValues.backgroundFront,
+  );
   const colorStore = useSelector(state => state?.color?.colorStore);
-  const renderColorItem = (item, index) => {
-    return (
-      <TouchableOpacity
-        style={[styles.styleButtonColor, {backgroundColor: item.value}]}
-      />
-    );
-  };
+
   const renderColorStore = (item, index) => {
     return (
       <TouchableOpacity
-        style={[styles.styleButtonColor, {backgroundColor: item.value}]}
+        onPress={() => changeColor(item?.value)}
+        style={[styles.styleButtonColor, {backgroundColor: item?.value}]}
       />
     );
   };
@@ -58,11 +49,11 @@ const CustomModalChangeColor = props => {
           </View>
           <View style={styles.viewListColor}>
             <View style={styles.viewColorItem}>
-              <FlatList
-                horizontal
-                data={FAKE_DATA_COLOR_ITEM}
-                keyExtractor={key => key.key}
-                renderItem={({item, index}) => renderColorItem(item, index)}
+              <TouchableOpacity
+                style={[
+                  styles.styleButtonColor,
+                  {backgroundColor: backgroundFrontStore[0]?.tintColor},
+                ]}
               />
             </View>
             <Text style={styles.content}>Choose Color</Text>
@@ -117,9 +108,9 @@ const styles = StyleSheet.create({
   styleButtonColor: {
     width: 30,
     height: 30,
-
     margin: 5,
     borderRadius: 5,
+    borderWidth: 0.2,
   },
 });
 export default CustomModalChangeColor;

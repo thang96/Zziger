@@ -50,6 +50,7 @@ const UploadFile = props => {
   const navigation = useNavigation();
 
   const [isFront, setIsFront] = useState(true);
+  const [isShow, setIsShow] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalCamera, setModalCamera] = useState(false);
@@ -228,6 +229,7 @@ const UploadFile = props => {
               background: `data:image/png;base64,${res?.data?.namecard_info?.background[0]?.background}`,
               width: res?.data?.namecard_info?.background[0]?.width,
               height: res?.data?.namecard_info?.background[0]?.height,
+              tintColor: undefined,
             },
           ];
           isFront
@@ -294,12 +296,10 @@ const UploadFile = props => {
   const [modalShowImage, setModalShowImage] = useState(false);
   const [orientation, setOrientation] = useState(true);
   useEffect(() => {
-    Orientation.unlockAllOrientations();
-
     Dimensions.addEventListener('change', ({window: {width, height}}) => {
       if (width < height) {
-        setOrientation(true);
         setModalShowImage(false);
+        setIsShow(false);
       } else {
         setOrientation(false);
         setModalShowImage(true);
@@ -348,6 +348,7 @@ const UploadFile = props => {
       {modalShowImage && (
         <View style={styles.viewModal}>
           <CustomModalShowImage
+            isShow={modalShowImage}
             source={isFront ? frontCardStore : backOfCardStore}
             modalVisible={modalShowImage}
             onRequestClose={() => {

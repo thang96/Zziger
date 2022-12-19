@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Dimensions,
   ImageBackground,
+  StatusBar,
+  Image,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import CustomButtonLogo from '../../../Components/CustomButtonLogo';
@@ -22,12 +24,18 @@ import {
   removeValuesFront,
   removeValuesBack,
 } from '../../../Stores/slices/cardValuesSlice';
-import Orientation from 'react-native-orientation-locker';
+import Orientation, {
+  LANDSCAPE,
+  OrientationLocker,
+} from 'react-native-orientation-locker';
 import PanAndPinch from '../../../Components/PanAndPinch';
+import CustomAppbar from '../../../Components/CustomAppBar';
+import CustomModalShowImage from '../../../Components/CustomModalShowImage';
+import CustomModalShowImageRender from '../../../Components/CustomModalShowImageRender';
 const EditPositionTemplate = () => {
   const route = useRoute();
   const [loading, setLoading] = useState(true);
-  const isFocused = useIsFocused();
+  const [isFront, setIsFront] = useState(true);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const backgroundFrontStore = route.params?.background ?? [];
@@ -36,27 +44,38 @@ const EditPositionTemplate = () => {
 
   const [eachBackgroundFrontStore, setEachBackgroundFrontStore] = useState([]);
   const [eachValuesFrontStore, setEachValuesFrontStore] = useState([]);
+  const [orientation, setOrientation] = useState(false);
 
   useEffect(() => {
-    if (isFocused) {
-      setTimeout(() => {
-        Orientation.lockToLandscape();
-      }, 2000);
-      setTimeout(() => {
-        renderSizelandscape();
-        setLoading(false);
-      }, 3000);
-    }
-  }, [isFocused]);
+    renderSizePortrait();
+    setIsFront(route.params?.isFront);
+  }, []);
+  useEffect(() => {
+    Dimensions.addEventListener('change', ({window: {width, height}}) => {
+      if (width < height) {
+        setLoading(true);
+        setOrientation(true);
+        setTimeout(() => {
+          renderSizePortrait();
+        }, 500);
+      } else {
+        setOrientation(false);
+        setLoading(true);
+        setTimeout(() => {
+          renderSizelandscape();
+        }, 500);
+      }
+    });
+  }, [orientation]);
 
-  const renderSizelandscape = () => {
-    let imageWidth = Dimensions.get('window').width - 200;
+  const renderSizePortrait = () => {
+    let imageWidth = Dimensions.get('window').width - 20;
     let heightCard = backgroundFrontStore[0]?.width;
     let scales = heightCard / imageWidth;
     if (valuesFrontStore && heightCard) {
       let eachBack = [];
       for (let index = 0; index < backgroundFrontStore.length; index++) {
-        const elementGround = backgroundFrontStore[index];
+        let elementGround = backgroundFrontStore[index];
         let newElementBackground = {
           background: elementGround?.background,
           width: elementGround.width / scales,
@@ -67,7 +86,7 @@ const EditPositionTemplate = () => {
       setEachBackgroundFrontStore(eachBack);
       let eachValues = [];
       for (let index = 0; index < valuesFrontStore.length; index++) {
-        const element = valuesFrontStore[index];
+        let element = valuesFrontStore[index];
         let newElement = {
           ...element,
           x: element?.x / scales,
@@ -78,6 +97,38 @@ const EditPositionTemplate = () => {
       }
       setEachValuesFrontStore(eachValues);
     }
+    setLoading(false);
+  };
+  const renderSizelandscape = () => {
+    let imageWidth = Dimensions.get('window').width - 200;
+    let heightCard = backgroundFrontStore[0]?.width;
+    let scalesPort = heightCard / imageWidth;
+    if (valuesFrontStore && scalesPort) {
+      let eachBack = [];
+      for (let index = 0; index < backgroundFrontStore.length; index++) {
+        let elementGround = backgroundFrontStore[index];
+        let newElementBackground = {
+          background: elementGround?.background,
+          width: elementGround.width / scalesPort,
+          height: elementGround.height / scalesPort,
+        };
+        eachBack.push(newElementBackground);
+      }
+      setEachBackgroundFrontStore(eachBack);
+      let eachValues = [];
+      for (let index = 0; index < valuesFrontStore.length; index++) {
+        let element = valuesFrontStore[index];
+        let newElement = {
+          ...element,
+          x: element?.x / scalesPort,
+          y: element?.y / scalesPort,
+          fontSize: (100 / scalesPort) * element?.scaleX,
+        };
+        eachValues.push(newElement);
+      }
+      setEachValuesFrontStore(eachValues);
+    }
+    setLoading(false);
   };
   const onTogglePressed = index => {
     return () => {
@@ -112,7 +163,7 @@ const EditPositionTemplate = () => {
   };
   const updateValueStore = () => {
     let isFront = route.params?.isFront;
-    let imageWidth = Dimensions.get('window').width - 200;
+    let imageWidth = Dimensions.get('window').width - 250;
     let heightCard = backgroundFrontStore[0]?.width;
     let scales = heightCard / imageWidth;
     let arrayValue = [];
@@ -139,23 +190,42 @@ const EditPositionTemplate = () => {
         source={icons.ic_back}
         styleButton={styles.customButtonLogo}
         styleImage={styles.styleImage}
-        onPress={() => updateValueStore()}
+        onPress={() => navigation.goBack()}
+        // onPress={() => updateValueStore()}
       />
+
       {loading ? (
         <ActivityIndicator color={colors.backgroundButton} size={'large'} />
       ) : (
         <View style={styles.eachContainer}>
-          <ImageBackground
-            resizeMode="cover"
-            source={{
-              uri: `${eachBackgroundFrontStore[0]?.background}`,
-            }}
+          <View
             style={{
+              overflow: 'hidden',
               width: eachBackgroundFrontStore[0]?.width,
               height: eachBackgroundFrontStore[0]?.height,
-              position: 'absolute',
-              overflow: 'hidden',
             }}>
+            {backgroundFrontStore[0]?.tintColor ? (
+              <Image
+                source={{uri: `${eachBackgroundFrontStore[0]?.background}`}}
+                style={{
+                  width: eachBackgroundFrontStore[0]?.width,
+                  height: eachBackgroundFrontStore[0]?.height,
+                  position: 'absolute',
+                  tintColor: `${backgroundFrontStore[0]?.tintColor}`,
+                }}
+                resizeMode={'cover'}
+              />
+            ) : (
+              <Image
+                source={{uri: `${eachBackgroundFrontStore[0]?.background}`}}
+                style={{
+                  width: eachBackgroundFrontStore[0]?.width,
+                  height: eachBackgroundFrontStore[0]?.height,
+                  position: 'absolute',
+                }}
+                resizeMode={'cover'}
+              />
+            )}
             {eachValuesFrontStore.map(
               (
                 {
@@ -177,7 +247,7 @@ const EditPositionTemplate = () => {
                 index,
               ) => {
                 return (
-                  <View key={id}>
+                  <View key={text}>
                     {type == 'text' ? (
                       <PanAndPinch
                         isSelected={index === selectedIndex}
@@ -232,21 +302,26 @@ const EditPositionTemplate = () => {
                 );
               },
             )}
-          </ImageBackground>
+          </View>
         </View>
       )}
     </View>
   );
 };
 const styles = StyleSheet.create({
-  container: {flex: 1},
+  container: {flex: 1, zIndex: 10000},
   eachContainer: {
     flex: 1,
     paddingHorizontal: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  customButtonLogo: {position: 'absolute', top: 8, left: 8, zIndex: 9999},
+  customButtonLogo: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    zIndex: 9999,
+  },
   styleImage: {width: 25, height: 25},
 });
 export default EditPositionTemplate;
