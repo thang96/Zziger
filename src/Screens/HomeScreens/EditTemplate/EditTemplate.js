@@ -212,6 +212,7 @@ const EditTemplate = props => {
                         width: widthCard,
                         height: heightCard,
                         position: 'absolute',
+                        opacity: 1,
                       }}
                       resizeMode={'cover'}
                     />
@@ -231,12 +232,14 @@ const EditTemplate = props => {
                           scaleY,
                           width,
                           height,
+                          fontSize,
+                          colorSecont,
                         },
                         index,
                       ) => {
                         return (
                           <View
-                            key={`${uuid.v1()}`}
+                            key={`${text}`}
                             style={{
                               width: width,
                               height: height,
@@ -247,12 +250,32 @@ const EditTemplate = props => {
                               position: 'absolute',
                             }}>
                             {type == 'text' ? (
-                              <GradientText
-                                listColor={['blue', 'red']}
-                                style={{fontSize: (100 / scale) * scaleX}}>
-                                {text}
-                              </GradientText>
-                            ) : null}
+                              <MaskedView
+                                maskElement={
+                                  <Text
+                                    style={{fontSize: (100 / scale) * scaleX}}>
+                                    {text}
+                                  </Text>
+                                }>
+                                <LinearGradient
+                                  colors={[color, colorSecont]}
+                                  start={{x: 0, y: 0}}
+                                  end={{x: 1, y: 0}}>
+                                  <Text
+                                    style={[
+                                      {fontSize: (100 / scale) * scaleX},
+                                      {opacity: 0},
+                                    ]}>
+                                    {text}
+                                  </Text>
+                                </LinearGradient>
+                              </MaskedView>
+                            ) : // <GradientText
+                            //   listColor={[`red`, `blue`]}
+                            //   style={{fontSize: (100 / scale) * scaleX}}>
+                            //   {text}
+                            // </GradientText>
+                            null}
                           </View>
                         );
                       },
@@ -277,7 +300,7 @@ const EditTemplate = props => {
                         index,
                       ) => {
                         return (
-                          <View key={`${uuid.v1()}`}>
+                          <View key={`${text}`}>
                             {type == 'text' ? (
                               <Text
                                 style={[
@@ -365,7 +388,7 @@ const EditTemplate = props => {
           </View>
           <View
             style={[styles.eachContainer, {height: '55%', paddingBottom: 40}]}>
-            {!modalChangeColor && (
+            {!modalChangeColor && !modalChangeTheme && (
               <View style={{paddingHorizontal: 10}}>
                 <View style={styles.viewRow}>
                   <CustomButton
@@ -397,10 +420,12 @@ const EditTemplate = props => {
                           scaleY,
                           width,
                           height,
+                          fontSize,
+                          colorSecont,
                         },
                         index,
                       ) => (
-                        <View key={`${uuid.v1()}`}>
+                        <View key={`${text}`}>
                           <InputText
                             text={text}
                             changeValue={textChange => {
@@ -414,6 +439,8 @@ const EditTemplate = props => {
                                 scaleY: scaleY,
                                 width: width,
                                 height: height,
+                                fontSize: fontSize,
+                                colorSecont: colorSecont,
                               };
                               dispatch(updateValuesFront({index, itemChange}));
                             }}
@@ -428,7 +455,7 @@ const EditTemplate = props => {
                         {color, type, font_size, x, y, text, scaleX, scaleY},
                         index,
                       ) => (
-                        <View key={`${uuid.v1()}`}>
+                        <View key={`${text}`}>
                           <InputText
                             text={text}
                             changeValue={textChange => {

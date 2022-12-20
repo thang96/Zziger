@@ -218,12 +218,12 @@ const UploadFile = props => {
   const addBackgroundFrontCard = async card_img => {
     setSendImage(true);
     const widthWindow = Dimensions.get('window').width - 20;
-    const imageWidth = Dimensions.get('window').height - 20;
+    const imageWidth = Dimensions.get('window').width - 20;
     await AICameraAPI.DetailImageAPI(card_img)
       .then(async res => {
-        let widthCard = res?.data?.namecard_info?.background[0]?.width;
-        let scales = widthCard / imageWidth;
         if (res?.status == 200) {
+          let widthCard = res?.data?.namecard_info?.background[0]?.width;
+          let scales = widthCard / imageWidth;
           let background = [
             {
               background: `data:image/png;base64,${res?.data?.namecard_info?.background[0]?.background}`,
@@ -258,6 +258,8 @@ const UploadFile = props => {
               width: size?.width,
               height: size?.height,
               id: idItem,
+              fontSize: (100 / scales) * element?.scaleX,
+              colorSecont: element?.color,
             });
           }
           isFront
