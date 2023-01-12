@@ -16,6 +16,7 @@ import ChooseOption from '../../../Components/ChooseOption';
 import CustomTwoBottomButtonFuntion from '../../../Components/CustomTwoBottomButtonFuntion';
 import {addCardRequirements} from '../../../Stores/slices/cardSlice';
 import {useDispatch} from 'react-redux';
+import CustomButton from '../../../Components/CustomButton';
 
 const AMOUNT = Array.from(new Array(200)).map((_, index) => ({
   label: index + 1,
@@ -23,6 +24,7 @@ const AMOUNT = Array.from(new Array(200)).map((_, index) => ({
 }));
 const OtherCards = props => {
   const widthImage = Dimensions.get('window').width - 20;
+  const [itemType, setItemType] = useState('명함');
   const [rounding, setRounding] = useState(false);
   const [amount, setAmount] = useState(200);
   const [paperType, setPaperType] = useState('반누보화이트');
@@ -68,17 +70,28 @@ const OtherCards = props => {
         resizeMode="cover"
         style={{
           borderRadius: 20,
-          // borderRadius: rounding ? 20 : 0,
+          borderRadius: rounding ? 20 : 0,
           width: widthImage,
           height: widthImage / 1.8,
         }}
       />
       <ScrollView style={{flex: 1}}>
-        <Text style={styles.titleContent}>
-          Lorem ipsum is simply dummy text of the printing and typesetting
-          industry
-        </Text>
-        <View style={[styles.line, {width: widthImage}]} />
+        <View style={styles.viewText}>
+          <Text style={styles.titleText}>품목</Text>
+          <View style={{width: '65%'}}>
+            <View style={{width: 150, height: 30}}>
+              <TouchableOpacity
+                onPress={onToggleChoosingSize}
+                style={styles.choosingAmount}>
+                <Text style={{color: 'black'}}>{itemType}</Text>
+                <Image
+                  style={{width: 20, height: 20}}
+                  source={icons.ic_sortDown}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
         <View style={styles.viewText}>
           <Text style={styles.titleText}>용지</Text>
           <View style={{width: '65%'}}>
@@ -245,26 +258,26 @@ const OtherCards = props => {
           <Text style={styles.detailPrice}>{amount * 20000} 원</Text>
         </View>
       </ScrollView>
-      <CustomTwoBottomButtonFuntion
-        styleTwoButton={styles.customTwoBottomButtonFuntion}
-        onPressLeft={() => navigation.goBack()}
-        onPressRight={() => {
-          let cardRequirements = {
-            paper: '일반용지',
-            size: '90mm*50mm',
-            amount: amount,
-            rounding: rounding,
-          };
-          dispatch(addCardRequirements(cardRequirements));
-          navigation.navigate('UploadFile');
-        }}
-        titleLeft={'이전'}
-        titleRight={'다음단계'}
-        styleTextLeft={{color: 'white'}}
-        styleTextRight={{color: 'white'}}
-        styleButtonLeft={{backgroundColor: 'rgb(251,132,124)'}}
-        styleButtonRight={{backgroundColor: colors.backgroundButton}}
-      />
+      <View style={[styles.viewRow]}>
+        <CustomButton
+          title={'이전'}
+          styleText={{fontWeight: 'bold', fontSize: 16, color: 'white'}}
+          styleButton={styles.styleButton}
+          onPress={() => navigation.navigate('HomeScreen')}
+        />
+        <CustomButton
+          title={'다음단계'}
+          styleText={{fontWeight: 'bold', fontSize: 16, color: 'white'}}
+          styleButton={styles.styleButton}
+          onPress={() => {
+            let cardRequirements = {
+              price: '',
+            };
+            dispatch(addCardRequirements(cardRequirements));
+            navigation.navigate('UploadFile');
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -335,14 +348,14 @@ const styles = StyleSheet.create({
   titlePrice: {
     width: '30%',
     fontWeight: 'bold',
-    fontSize: 20,
-    color: 'black',
+    fontSize: 25,
+    color: colors.backgroundButton,
   },
   detailPrice: {
     width: '70%',
     fontWeight: 'bold',
-    fontSize: 20,
-    color: 'red',
+    fontSize: 25,
+    color: colors.backgroundButton,
   },
   postProcessing: {
     width: '30%',
@@ -355,6 +368,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+  viewRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    width: '100%',
+    marginBottom: 10,
+  },
+  styleButton: {
+    height: 50,
+    width: 150,
+    backgroundColor: colors.backgroundButton,
+    borderRadius: 10,
   },
 });
 export default OtherCards;

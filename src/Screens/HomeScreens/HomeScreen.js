@@ -229,7 +229,11 @@ const HomeScreen = () => {
         <View style={[styles.viewBottom, {height: heightViewBottom}]}>
           <Text style={[styles.title, {marginVertical: 30}]}>홍길동님</Text>
           <View style={styles.viewRow}>
-            <TouchableOpacity style={styles.customButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.customButton}
+              onPress={() => {
+                navigation.navigate('EditTemplate');
+              }}>
               <Text style={styles.content}>명함</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.customButton} onPress={() => {}}>

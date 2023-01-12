@@ -38,4 +38,5 @@ export default {
   ic_rotateLeft: require('../Assets/icons/ic_rotateLeft.png'),
   ic_rotateRight: require('../Assets/icons/ic_rotateRight.png'),
   ic_editPC: require('../Assets/icons/ic_editPC.png'),
+  ic_textColor: require('../Assets/icons/ic_textColor.png'),
 };

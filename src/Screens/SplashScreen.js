@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, ImageBackground} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,10 +10,11 @@ const SplashScreen = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const token = useSelector(state => state?.token?.token);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     loginTokenApi();
-  }, [token]);
+  }, [token, isFocused]);
 
   const loginTokenApi = async () => {
     await AsyncStorage.getItem('token').then(value => {
@@ -22,17 +23,18 @@ const SplashScreen = props => {
     });
   };
   const callApiToken = async value => {
-    await LoginApi.GetVerifyTokenAPI(value)
-      .then(res => {
-        if (res?.status == 200 && res?.data?.success == true) {
-          navigation.navigate('HomeNavigation');
-        } else {
-          navigation.navigate('LoginNavigation');
-        }
-      })
-      .catch(function (error) {
-        navigation.navigate('LoginNavigation');
-      });
+    navigation.navigate('HomeNavigation');
+    // await LoginApi.GetVerifyTokenAPI(value)
+    //   .then(res => {
+    //     if (res?.status == 200 && res?.data?.success == true) {
+    //       navigation.navigate('HomeNavigation');
+    //     } else {
+    //       navigation.navigate('LoginNavigation');
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     navigation.navigate('LoginNavigation');
+    //   });
   };
 
   return (

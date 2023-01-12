@@ -18,18 +18,13 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import CustomAppbar from '../../../Components/CustomAppBar';
 import CustomButton from '../../../Components/CustomButton';
-import CustomButtonLogo from '../../../Components/CustomButtonLogo';
+import CustomSubMenu from '../../../Components/CustomSubMenu';
 import CustomTwoButtonFuntion from '../../../Components/CustomTwoButtonFuntion';
-import {useOrientation} from '../../../Hooks/useOrientation';
 import {colors, icons, images} from '../../../Constants';
 import CustomModaViewManuscriptSelete from '../../../Components/CustomModaViewManuscriptSelete';
 import CustomModalChangeColor from '../../../Components/CustomModalChangeColor';
 import CustomModalChooseThemeTemplate from '../../../Components/CustomModalChooseThemeTemplate';
-import uuid from 'react-native-uuid';
 import {
-  addBackgroundBack,
-  addBackgroundFront,
-  addValuesFront,
   updateBackgroundBack,
   updateBackgroundFront,
   updateValuesBack,
@@ -37,21 +32,9 @@ import {
 } from '../../../Stores/slices/cardValuesSlice';
 import Orientation from 'react-native-orientation-locker';
 import CustomModalShowImageRender from '../../../Components/CustomModalShowImageRender';
-import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from '@react-native-community/masked-view';
-
-const GradientText = props => {
-  return (
-    <MaskedView maskElement={<Text {...props} />}>
-      <LinearGradient
-        colors={props?.listColor}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}>
-        <Text {...props} style={[props?.style, {opacity: 0}]} />
-      </LinearGradient>
-    </MaskedView>
-  );
-};
+import GradientText from '../../../Components/GradientText';
+import CustomModalChangeTextColor from '../../../Components/CustomModalChangeTextColor';
+import CustomModalChangeText from '../../../Components/CustomModalChangeText';
 
 const EditTemplate = props => {
   const isFocused = useIsFocused();
@@ -94,6 +77,8 @@ const EditTemplate = props => {
   const [modalSelete, setModalSelete] = useState(false);
   const [modalChangeColor, setModalChangeColor] = useState(false);
   const [modalChangeTheme, setModalChangeTheme] = useState(false);
+  const [modalChangeTextColor, setModalChangeTextColor] = useState(false);
+  const [modalChangeText, setModalChangeText] = useState(true);
 
   const [widthCard, setWidthCard] = useState(0);
   const [heightCard, setHeightCard] = useState(0);
@@ -104,7 +89,6 @@ const EditTemplate = props => {
   const [widthCardBack, setWidthCardBack] = useState(0);
   const [heightCardBack, setHeightCardBack] = useState(0);
   const [scaleBack, setScaleBack] = useState(0);
-  const [backgroundCardBack, setBackgroundCardBack] = useState(null);
   const [valuesBack, setValuesBack] = useState([]);
   const renderSize = () => {
     let widthCard = backgroundFrontStore[0]?.width;
@@ -126,7 +110,6 @@ const EditTemplate = props => {
       setScaleBack(scales);
       setWidthCardBack(backgroundBackStore[0]?.width / scales);
       setHeightCardBack(backgroundBackStore[0]?.height / scales);
-      setBackgroundCardBack(backgroundBackStore[0]?.background);
       setValuesBack(valuesBackStore);
     }
   };
@@ -166,7 +149,7 @@ const EditTemplate = props => {
         <ActivityIndicator color={colors.backgroundButton} size={'large'} />
       ) : (
         <View style={styles.container}>
-          <View style={{width: '100%', height: '45%'}}>
+          <View style={{width: '100%', height: '100%'}}>
             <View style={{paddingHorizontal: 10}}>
               <CustomTwoButtonFuntion
                 titleLeft={'Front'}
@@ -250,32 +233,12 @@ const EditTemplate = props => {
                               position: 'absolute',
                             }}>
                             {type == 'text' ? (
-                              <MaskedView
-                                maskElement={
-                                  <Text
-                                    style={{fontSize: (100 / scale) * scaleX}}>
-                                    {text}
-                                  </Text>
-                                }>
-                                <LinearGradient
-                                  colors={[color, colorSecont]}
-                                  start={{x: 0, y: 0}}
-                                  end={{x: 1, y: 0}}>
-                                  <Text
-                                    style={[
-                                      {fontSize: (100 / scale) * scaleX},
-                                      {opacity: 0},
-                                    ]}>
-                                    {text}
-                                  </Text>
-                                </LinearGradient>
-                              </MaskedView>
-                            ) : // <GradientText
-                            //   listColor={[`red`, `blue`]}
-                            //   style={{fontSize: (100 / scale) * scaleX}}>
-                            //   {text}
-                            // </GradientText>
-                            null}
+                              <GradientText
+                                listColor={['red', 'blue']}
+                                style={{fontSize: (100 / scale) * scaleX}}>
+                                {text}
+                              </GradientText>
+                            ) : null}
                           </View>
                         );
                       },
@@ -324,165 +287,91 @@ const EditTemplate = props => {
                 </View>
               )}
             </View>
-            <CustomModalChangeColor
-              modalVisible={modalChangeColor}
-              onRequestClose={() => setModalChangeColor(false)}
-              closeModal={() => setModalChangeColor(false)}
-              changeColor={color => {
-                let itemChange = {...backgroundFrontStore[0], tintColor: color};
-                let index = 0;
-                isFront
-                  ? dispatch(updateBackgroundFront({itemChange, index}))
-                  : dispatch(updateBackgroundBack(itemChange));
-              }}
-            />
-            <CustomModalChooseThemeTemplate
-              modalVisible={modalChangeTheme}
-              onRequestClose={() => setModalChangeTheme(false)}
-              closeModal={() => setModalChangeTheme(false)}
-              changeImage={image => {
-                console.log(image);
-                let itemChange = {
-                  ...backgroundFrontStore[0],
-                  background: image,
-                  tintColor: undefined,
-                };
-                let index = 0;
-                isFront
-                  ? dispatch(updateBackgroundFront({itemChange, index}))
-                  : dispatch(updateBackgroundBack(itemChange));
-              }}
-            />
-            <CustomModaViewManuscriptSelete
-              titleTop={'Edit'}
-              secondIconTop={icons.ic_checkGreen}
-              firtTitle={'Background color change'}
-              firtIcon={icons.ic_colors}
-              secondTitle={'Choose theme template'}
-              secondIcon={icons.ic_template}
-              thirdTitle={'Change position template'}
-              thirdIcon={icons.ic_changePosition}
-              modalVisible={modalSelete}
-              onRequestClose={() => setModalSelete(false)}
-              closeModal={() => setModalSelete(false)}
-              firtOnpress={() => {
-                setModalSelete(false);
-                setModalChangeColor(true);
-              }}
-              secondOnpress={() => {
-                setModalSelete(false);
-                setModalChangeTheme(true);
-              }}
-              thirdOnpress={() => {
-                let data = {
-                  background: isFront
-                    ? backgroundFrontStore
-                    : backgroundBackStore,
-                  values: isFront ? valuesFrontStore : valuesBackStore,
-                  isFront: isFront,
-                };
-                navigation.navigate('EditPositionTemplate', data);
-                setModalSelete(false);
-              }}
-            />
-          </View>
-          <View
-            style={[styles.eachContainer, {height: '55%', paddingBottom: 40}]}>
-            {!modalChangeColor && !modalChangeTheme && (
-              <View style={{paddingHorizontal: 10}}>
-                <View style={styles.viewRow}>
-                  <CustomButton
-                    title={'ASSIGN DESIGN'}
-                    styleButton={styles.styleCustomButton}
-                    styleText={styles.styleTextCustomButton}
-                    onPress={() => navigation.navigate('AssignDesign')}
-                  />
+            <View style={{flex: 1, backgroundColor: colors.backgroundInput}}>
+              <CustomModalChangeColor
+                modalVisible={modalChangeColor}
+                onRequestClose={() => setModalChangeColor(false)}
+                closeModal={() => setModalChangeColor(false)}
+                changeColor={color => {
+                  let itemChange = {
+                    ...backgroundFrontStore[0],
+                    tintColor: color,
+                  };
+                  let index = 0;
+                  isFront
+                    ? dispatch(updateBackgroundFront({itemChange, index}))
+                    : dispatch(updateBackgroundBack(itemChange));
+                }}
+              />
 
-                  <CustomButtonLogo
-                    source={icons.ic_editModal}
-                    styleButton={styles.styleIcon}
-                    onPress={() => setModalSelete(true)}
-                  />
-                </View>
-                <ScrollView>
-                  {isFront &&
-                    values != [] &&
-                    values.map(
-                      (
-                        {
-                          color,
-                          type,
-                          font_size,
-                          x,
-                          y,
-                          text,
-                          scaleX,
-                          scaleY,
-                          width,
-                          height,
-                          fontSize,
-                          colorSecont,
-                        },
-                        index,
-                      ) => (
-                        <View key={`${text}`}>
-                          <InputText
-                            text={text}
-                            changeValue={textChange => {
-                              let itemChange = {
-                                color: color,
-                                type: type,
-                                x: x,
-                                y: y,
-                                text: textChange,
-                                scaleX: scaleX,
-                                scaleY: scaleY,
-                                width: width,
-                                height: height,
-                                fontSize: fontSize,
-                                colorSecont: colorSecont,
-                              };
-                              dispatch(updateValuesFront({index, itemChange}));
-                            }}
-                          />
-                        </View>
-                      ),
-                    )}
-                  {!isFront &&
-                    valuesBack != [] &&
-                    valuesBack.map(
-                      (
-                        {color, type, font_size, x, y, text, scaleX, scaleY},
-                        index,
-                      ) => (
-                        <View key={`${text}`}>
-                          <InputText
-                            text={text}
-                            changeValue={textChange => {
-                              let itemChange = {
-                                color: color,
-                                type: type,
-                                x: x,
-                                y: y,
-                                text: textChange,
-                                scaleX: scaleX,
-                                scaleY: scaleY,
-                              };
-                              isFront
-                                ? dispatch(
-                                    updateValuesFront({index, itemChange}),
-                                  )
-                                : dispatch(
-                                    updateValuesBack({index, itemChange}),
-                                  );
-                            }}
-                          />
-                        </View>
-                      ),
-                    )}
-                </ScrollView>
-              </View>
-            )}
+              <CustomModalChangeTextColor
+                modalVisible={modalChangeTextColor}
+                onRequestClose={() => setModalChangeTextColor(false)}
+                closeModal={() => setModalChangeTextColor(false)}
+                changeColor={color => {
+                  let itemChange = {
+                    ...backgroundFrontStore[0],
+                    tintColor: color,
+                  };
+                  let index = 0;
+                  isFront
+                    ? dispatch(updateBackgroundFront({itemChange, index}))
+                    : dispatch(updateBackgroundBack(itemChange));
+                }}
+              />
+              <CustomModalChooseThemeTemplate
+                modalVisible={modalChangeTheme}
+                onRequestClose={() => setModalChangeTheme(false)}
+                closeModal={() => setModalChangeTheme(false)}
+                changeImage={image => {
+                  console.log(image);
+                  let itemChange = {
+                    ...backgroundFrontStore[0],
+                    background: image,
+                    tintColor: undefined,
+                  };
+                  let index = 0;
+                  isFront
+                    ? dispatch(updateBackgroundFront({itemChange, index}))
+                    : dispatch(updateBackgroundBack(itemChange));
+                }}
+              />
+              <CustomModalChangeText
+                modalVisible={modalChangeText}
+                closeModal={() => setModalChangeText(false)}
+                onRequestClose={() => setModalChangeText(false)}
+                data={isFront ? valuesFrontStore : valuesBackStore}
+                isFront={isFront}
+              />
+              <CustomSubMenu
+                firtOnpress={() => {
+                  setModalSelete(false);
+                  setModalChangeColor(true);
+                }}
+                secondOnpress={() => {
+                  setModalSelete(false);
+                  setModalChangeTheme(true);
+                }}
+                thirdOnpress={() => {
+                  let data = {
+                    background: isFront
+                      ? backgroundFrontStore
+                      : backgroundBackStore,
+                    values: isFront ? valuesFrontStore : valuesBackStore,
+                    isFront: isFront,
+                  };
+                  navigation.navigate('EditPositionTemplate', data);
+                  setModalSelete(false);
+                }}
+                fourthOnpress={() => {
+                  setModalChangeTextColor(true);
+                  setModalSelete(false);
+                }}
+                fifthOnpress={() => {
+                  setModalChangeText(true);
+                }}
+              />
+            </View>
           </View>
         </View>
       )}

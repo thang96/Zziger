@@ -19,7 +19,7 @@ const CardTemplate = props => {
         <TouchableOpacity onPress={onPress} style={styles.button}>
           <Text style={{color: 'white'}}>{type}</Text>
         </TouchableOpacity>
-        <Text style={styles.describe}>{describe}</Text>
+        <Text style={[styles.describe, {textAlign: 'center'}]}>{describe}</Text>
       </View>
       <Image
         source={uri}
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   describe: {
     fontWeight: '500',
-    color: 'rgb(26,109,255)',
+    color: 'black',
     width: '65%',
   },
   image: {alignSelf: 'center'},

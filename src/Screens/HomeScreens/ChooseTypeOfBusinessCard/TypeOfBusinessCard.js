@@ -26,14 +26,6 @@ const TypeOfBusinessCard = props => {
 
   return (
     <View style={styles.container}>
-      <CustomAppbar
-        styleAppBar={{paddingHorizontal: 8}}
-        iconLeft={icons.ic_back}
-        iconRight2={icons.ic_bell}
-        iconRight1={icons.ic_shopping}
-        title={'주문할 명함 유형을 선택하세요'}
-        onPressLeftIcon={() => navigation.goBack()}
-      />
       <CustomTwoButtonFuntion
         titleLeft={'일반형'}
         titleRight={'기타'}

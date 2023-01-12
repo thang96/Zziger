@@ -17,7 +17,7 @@ const CutImageAPI = img => {
 
   return new Promise((resole, reject) => {
     axios
-      .post('http://210.245.51.29:8001/get_card_region', formData, config)
+      .post('http://192.168.1.12:8005/get_card_region', formData, config)
       .then(res => {
         resole(res);
       })
@@ -37,7 +37,7 @@ const DetailImageAPI = img => {
   };
   return new Promise((resole, reject) => {
     axios
-      .post('http://210.245.51.29:8002/get_namecard_info', formData, config)
+      .post('http://192.168.1.12:8006/get_namecard_info', formData, config)
       .then(res => {
         resole(res);
       })

@@ -274,7 +274,7 @@ const EditPositionTemplate = () => {
                         }>
                         <TouchableOpacity
                           activeOpacity={1}
-                          hitSlop={{top: 20, left: 20}}
+                          hitSlop={{bottom: 20, left: 20}}
                           style={[
                             StyleSheet.absoluteFill,
                             {zIndex: 99, elevation: 99},

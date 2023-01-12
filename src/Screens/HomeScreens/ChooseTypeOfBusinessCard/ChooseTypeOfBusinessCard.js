@@ -11,7 +11,7 @@ import {
 import CardTemplate from '../../../Components/CardTemplate';
 import CustomButton from '../../../Components/CustomButton';
 import CustomAppbar from '../../../Components/CustomAppBar';
-import {icons, images} from '../../../Constants';
+import {colors, icons, images} from '../../../Constants';
 import CustomModalNotification from '../../../Components/CustomModalNotification';
 import {addtypeCard} from '../../../Stores/slices/cardSlice';
 import {useDispatch, useSelector} from 'react-redux';
@@ -43,26 +43,22 @@ const ChooseTypeOfBusinessCard = () => {
       )}
       <CustomAppbar
         styleAppBar={{paddingHorizontal: 8, marginBottom: 20}}
-        iconLeft={icons.ic_back}
-        iconRight2={icons.ic_bell}
-        iconRight1={icons.ic_shopping}
         title={'주문할 명함 유형을 선택하세요'}
-        onPressLeftIcon={() => navigation.goBack()}
       />
       <ScrollView style={styles.container}>
         <CardTemplate
           styleCard={{
             padding: 10,
-            borderWidth: typeCard == 'common' ? 2 : 0,
             borderColor: 'red',
           }}
           onPress={() => {
-            setTypeCard('common');
+            dispatch(addtypeCard('common'));
+            navigation.navigate('TypeOfBusinessCard');
           }}
           uri={images.im_commonCard}
           type={'일반형'}
           detail={'일반용지 / 200매 / 5,000원'}
-          describe={'일반적으로 가장 많이 사용하는 명함이예요'}
+          describe={'일반적으로 가장 많이 사용하는\n명함이예요'}
           describeSize={'사이즈 90mm*50mm'}
           styleImage={{
             width: imageWidth,
@@ -73,17 +69,17 @@ const ChooseTypeOfBusinessCard = () => {
         <View style={[styles.line, {width: imageWidth}]} />
         <CardTemplate
           onPress={() => {
-            setTypeCard('other');
+            dispatch(addtypeCard('other'));
+            navigation.navigate('TypeOfBusinessCard');
           }}
           styleCard={{
             padding: 10,
-            borderWidth: typeCard == 'other' ? 2 : 0,
             borderColor: 'red',
           }}
           uri={images.im_otherCard}
           type={'기타'}
-          detail={'용지, 사이즈 선택 '}
-          describe={'용지와 사이즈를 취향에 맞게 선택해보세요'}
+          detail={'명함 외 품목도 선택 가능해요'}
+          describe={'용지와 사이즈를\n취향에 맞게 선택해보세요'}
           styleImage={{
             width: imageWidth,
             height: imageWidth / 1.8,
@@ -94,14 +90,7 @@ const ChooseTypeOfBusinessCard = () => {
           title={'이전'}
           styleButton={styles.customButtonOk}
           styleText={styles.textCustomButtonOk}
-          onPress={() => {
-            if (typeCard == null) {
-              setModalVisible(true);
-            } else {
-              navigation.navigate('TypeOfBusinessCard');
-              dispatch(addtypeCard(typeCard));
-            }
-          }}
+          onPress={() => navigation.goBack()}
         />
       </ScrollView>
     </View>
@@ -126,7 +115,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   customButtonOk: {
-    backgroundColor: 'rgb(251,132,124)',
+    backgroundColor: colors.backgroundButton,
     height: 50,
     width: 150,
     alignSelf: 'center',
