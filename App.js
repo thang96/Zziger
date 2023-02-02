@@ -26,30 +26,11 @@ const App = () => {
   const devices = useCameraDevices();
   const device = devices.back;
   const camera = useRef();
-
   const requestCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: 'Cool Photo App Camera Permission',
-          message:
-            'Cool Photo App needs access to your camera ' +
-            'so you can take awesome pictures.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        setCameraPermission(true);
-      } else {
-        // console.log('Camera permission denied');
-      }
-    } catch (err) {
-      // console.warn(err);
-    }
+    const newCameraPermission = await Camera.requestCameraPermission();
+    setCameraPermission(newCameraPermission == 'authorized' ? true : false);
   };
+
   useEffect(() => {
     requestCameraPermission();
   }, []);
