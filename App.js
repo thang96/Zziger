@@ -1,42 +1,101 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
+  ActivityIndicator,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TouchableOpacity,
   View,
-  LogBox,
+  PermissionsAndroid,
 } from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {NavigationContainer} from '@react-navigation/native';
-import {Provider} from 'react-redux';
-import {store} from './src/Stores/store';
-import MainNavigation from './src/Navigations/MainNavigation';
-import 'react-native-gesture-handler';
-import Orientation from 'react-native-orientation-locker';
+import {
+  Camera,
+  useCameraDevices,
+  useFrameProcessor,
+} from 'react-native-vision-camera';
+
+export function objectDetect(frame) {
+  'worklet';
+  return __objectDetect(frame);
+}
+
 const App = () => {
+  const [cameraPermission, setCameraPermission] = useState(false);
+  const devices = useCameraDevices();
+  const device = devices.back;
+  const camera = useRef();
+
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'Cool Photo App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        setCameraPermission(true);
+      } else {
+        // console.log('Camera permission denied');
+      }
+    } catch (err) {
+      // console.warn(err);
+    }
+  };
   useEffect(() => {
-    Orientation.lockToPortrait();
-    LogBox.ignoreAllLogs();
+    requestCameraPermission();
   }, []);
+
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet';
+    const card = objectDetect(frame);
+    console.log(`${card}`);
+  }, []);
+
+  const takePhoto = async () => {
+    photo.current = await camera.current.takePhoto();
+  };
+
+  if (device == null) return <ActivityIndicator size={40} color={'red'} />;
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar hidden={true} />
-      <GestureHandlerRootView style={styles.container}>
-        <Provider store={store}>
-          <NavigationContainer>
-            <MainNavigation />
-          </NavigationContainer>
-        </Provider>
-      </GestureHandlerRootView>
+    <SafeAreaView style={{flex: 1}}>
+      {device != null && cameraPermission && (
+        <>
+          <Camera
+            style={StyleSheet.absoluteFill}
+            ref={camera}
+            isActive={true}
+            device={device}
+            photo={true}
+            frameProcessor={frameProcessor}
+            frameProcessorFps={5}
+          />
+          <TouchableOpacity style={styles.buttonCamera} onPress={takePhoto} />
+        </>
+      )}
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  buttonCamera: {
+    position: 'absolute',
+    bottom: 15,
+    alignSelf: 'center',
+    width: 80,
+    height: 80,
+    borderRadius: 80,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    borderWidth: 5,
+    borderColor: 'white',
   },
 });
 export default App;
