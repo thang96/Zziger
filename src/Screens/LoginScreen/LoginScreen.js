@@ -9,8 +9,9 @@ import {
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
-  AppState,
 } from 'react-native';
+
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 import TitleLogin from '../../Assets/svgs/TitleLogin.svg';
 import CustomButton from '../../Components/CustomButton';
@@ -19,6 +20,8 @@ import {colors} from '../../Constants';
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+
   return (
     <View style={styles.container}>
       <View style={styles.eachContainer}>
@@ -58,6 +61,17 @@ const LoginScreen = () => {
             onPress={() => {}}
           />
         </View>
+        <BouncyCheckbox
+          size={25}
+          fillColor={colors.backgroundButton}
+          unfillColor="#FFFFFF"
+          text="Custom Checkbox"
+          iconStyle={{borderColor: colors.backgroundButton}}
+          innerIconStyle={{borderWidth: 2}}
+          textStyle={{color: toggleCheckBox ? 'blue' : 'black', fontSize: 14}}
+          isChecked={toggleCheckBox}
+          onPress={() => setToggleCheckBox(!toggleCheckBox)}
+        />
       </View>
     </View>
   );
