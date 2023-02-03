@@ -30,7 +30,7 @@ const App = () => {
     const newCameraPermission = await Camera.requestCameraPermission();
     setCameraPermission(newCameraPermission == 'authorized' ? true : false);
   };
-
+  console.log(cameraPermission);
   useEffect(() => {
     requestCameraPermission();
   }, []);
