@@ -1,11 +1,6 @@
 import {createAction, createSlice, current} from '@reduxjs/toolkit';
 const initialState = {
-  token: null,
-  // userId: {
-  //   id: 17,
-  //   password: '123456',
-  //   token: '123123',
-  // },
+  token: 'token',
 };
 export const tokenSlice = createSlice({
   name: 'token',
@@ -13,7 +8,6 @@ export const tokenSlice = createSlice({
   reducers: {
     updateToken: (state, actions) => {
       state.token = actions.payload;
-      // state.user = [...current(state.user), actions.payload];
     },
   },
 });

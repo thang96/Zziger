@@ -1,6 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {LoginScreen} from '../../Screens';
+import {LoginScreen, ReLoginScreen} from '../../Screens';
 const Stack = createStackNavigator();
 const LoginNavigation = () => {
   return (
@@ -8,6 +8,11 @@ const LoginNavigation = () => {
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ReLoginScreen"
+        component={ReLoginScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
