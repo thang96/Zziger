@@ -11,6 +11,7 @@ const SplashScreen = props => {
   const dispatch = useDispatch();
   const token = useSelector(state => state?.token?.token);
   const isFocused = useIsFocused();
+  const [listUser, setListUser] = useState([]);
 
   useEffect(() => {
     loginTokenApi();
@@ -19,15 +20,32 @@ const SplashScreen = props => {
   const loginTokenApi = async () => {
     await AsyncStorage.getItem('token').then(value => {
       if (value) {
-        dispatch(updateToken(value));
+        // dispatch(updateToken(value));
         callApiToken(value);
       } else if (!value) {
-        navigation.navigate('LoginNavigation');
+        getListUser();
       }
     });
   };
+  const getListUser = async () => {
+    try {
+      await AsyncStorage.getItem('listUser')
+        .then(res => {
+          if (res) {
+            let result = JSON.parse(res);
+            setListUser(result);
+            navigation.navigate('ReLoginScreen');
+          } else if (!res) {
+            navigation.navigate('LoginScreen');
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } catch (error) {}
+  };
   const callApiToken = async value => {
-    navigation.navigate('HomeNavigation');
+    navigation.navigate('HomeScreen');
     // await LoginApi.GetVerifyTokenAPI(value)
     //   .then(res => {
     //     if (res?.status == 200 && res?.data?.success == true) {

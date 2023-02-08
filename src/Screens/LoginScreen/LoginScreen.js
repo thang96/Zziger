@@ -5,6 +5,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from 'react-native';
 
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -19,11 +20,39 @@ import IconKakaotalk from '../../Assets/svgs/ic_kakaotalk.svg';
 import IconGoogle from '../../Assets/svgs/ic_google.svg';
 import IconInstagram from '../../Assets/svgs/ic_instagram.svg';
 import {Post_GetUserToken} from '../../Apis/LoginAPI/LoginApi';
+import {useNavigation} from '@react-navigation/native';
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [automaticLogin, setAutomaticLogin] = useState(true);
+  const [listUser, setListUser] = useState([]);
+
+  const [keyBoardIsShow, setKeyBoardIsShow] = useState();
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', () => {
+      setKeyBoardIsShow(true);
+    });
+    Keyboard.addListener('keyboardDidHide', () => {
+      setKeyBoardIsShow(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    const getListUser = async () => {
+      await AsyncStorage.getItem('listUser')
+        .then(res => {
+          if (res) {
+            setListUser(JSON.parse(res));
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
+    getListUser();
+  }, []);
 
   useEffect(() => {
     const checkAutomaticLogin = async () => {
@@ -38,18 +67,32 @@ const LoginScreen = () => {
   }, [automaticLogin]);
 
   const login = async () => {
-    try {
-      await Post_GetUserToken(username, password, 3)
-        .then(res => {
-          //response data
-          console.log(res);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    } catch (error) {
-      console.error(error);
-    }
+    let user = {username: username, password: password};
+    let newArrayUser = [...listUser, user];
+    AsyncStorage.setItem('listUser', JSON.stringify(newArrayUser));
+    navigation.navigate('HomeScreen');
+    AsyncStorage.setItem('token', '123');
+    //       AsyncStorage.setItem('listUser', newListUser);
+    // try {
+    //   await AsyncStorage.multiSet(['listUser', secondPair])
+    // } catch(e) {
+    //   //save error
+    // }
+    // try {
+    //   let newListUser = JSON.stringify(listUser);
+    //   await Post_GetUserToken(username, password, 3)
+    //     .then(res => {
+    //       //response data
+    //       console.log(res);
+    //       let newListUser = JSON.stringify(listUser);
+    //       AsyncStorage.setItem('listUser', newListUser);
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   return (
@@ -72,7 +115,7 @@ const LoginScreen = () => {
           onChangeText={text => setPassword(text)}
         />
         <CustomButton
-          styleViewButton={[
+          styleButton={[
             styles.styleViewButton,
             {
               borderRadius: 10,
@@ -80,7 +123,6 @@ const LoginScreen = () => {
               marginTop: 30,
             },
           ]}
-          styleButton={styles.styleViewButton}
           label={'Login'}
           styleLabel={styles.styleLabel}
           onPress={() => login()}
@@ -144,11 +186,14 @@ const LoginScreen = () => {
             IconSvg={IconInstagram}
           />
         </View>
-        <CustomButton
-          label={'회원가입'}
-          styleViewButton={styles.buttonLogin}
-          styleLabel={styles.textLogin}
-        />
+        {!keyBoardIsShow && (
+          <CustomButton
+            label={'회원가입'}
+            styleButton={styles.buttonLogin}
+            styleLabel={styles.textLogin}
+            onPress={() => navigation.navigate('Register')}
+          />
+        )}
       </View>
     </KeyboardAvoidingView>
   );

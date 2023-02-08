@@ -17,6 +17,8 @@ import {useNavigation} from '@react-navigation/native';
 // import useGetShare from '../../Hooks/useGetShare';
 // import CustomLoading from '../../Components/CustomLoading';
 import {useDispatch, useSelector} from 'react-redux';
+import CustomLoading from '../../Components/CustomLoading';
+import useGetShare from '../../Hooks/useGetShare';
 
 const requestCameraPermission = async () => {
   try {
@@ -43,6 +45,13 @@ const requestCameraPermission = async () => {
 };
 
 const HomeScreen = () => {
+  const files = useGetShare();
+  useEffect(() => {
+    if (files !== null && files !== undefined) {
+      // dispatch(addShareCard(files[0]));
+      console.log(`${files[0]}`);
+    }
+  }, [files]);
   useEffect(() => {
     requestCameraPermission();
   }, []);
@@ -55,43 +64,21 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  // const files = useGetShare();
-  // useEffect(() => {
-  //   if (files !== null && files !== undefined) {
-  //     dispatch(addShareCard(files[0]));
-  //     navigation.navigate('ChooseTypeOfBusinessCard');
-  //   }
-  // }, [files]);
-
   return (
     <View style={styles.container}>
-      {modalCamera && (
-        <View style={styles.styleModal}>
-          <CustomCamera
-            getPicture={image => getPicture(image)}
-            cancel={() => setModalCamera(false)}
-          />
-        </View>
+      {loading && (
+        <CustomLoading
+          modalVisible={loading}
+          onRequestClose={() => setLoading(false)}
+        />
       )}
-
-      {/* {loading && (
-        <View style={styles.styleModal}>
-          <CustomLoading
-            modalVisible={loading}
-            onRequestClose={() => setLoading(false)}
-          />
-        </View>
-      )} */}
       <ImageBackground
         style={styles.container}
         source={images.backgroundHome}
         resizeMode={'cover'}>
         <TouchableOpacity
           style={styles.customButtonLogo}
-          onPress={() =>
-            // setModalVisible(prev => (prev == false ? true : false))
-            navigation.navigate('ChooseTypeOfBusinessCard')
-          }>
+          onPress={() => navigation.navigate('TakeAPictureToOrder')}>
           <Text style={styles.textTitle}>{'사진 찍어 \n주문하기'}</Text>
           <View style={styles.viewTitle}>
             <Image source={icons.ic_camera} style={styles.imageTitle} />
@@ -108,7 +95,11 @@ const HomeScreen = () => {
               }}>
               <Text style={styles.content}>명함</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.customButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.customButton}
+              onPress={() => {
+                setLoading(!loading);
+              }}>
               <Text style={styles.content}>주문내역</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.customButton} onPress={() => {}}>
@@ -183,13 +174,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    zIndex: 9999,
-  },
-  styleModal: {
-    backgroundColor: 'rgba(119,119,119,0.7)',
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
     zIndex: 9999,
   },
   textTitle: {
