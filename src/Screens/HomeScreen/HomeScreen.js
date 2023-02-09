@@ -8,15 +8,9 @@ import {
   ImageBackground,
   TouchableOpacity,
   Dimensions,
-  ActivityIndicator,
-  AppState,
 } from 'react-native';
 import {colors, icons, images} from '../../Constants';
 import {useNavigation} from '@react-navigation/native';
-// import {postImg} from '../../Apis/HomeAPI';
-// import useGetShare from '../../Hooks/useGetShare';
-// import CustomLoading from '../../Components/CustomLoading';
-import {useDispatch, useSelector} from 'react-redux';
 import CustomLoading from '../../Components/CustomLoading';
 import useGetShare from '../../Hooks/useGetShare';
 
@@ -58,11 +52,7 @@ const HomeScreen = () => {
 
   const navigation = useNavigation();
   const heightViewBottom = Dimensions.get('window').height - 250;
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalCamera, setModalCamera] = useState(false);
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
 
   return (
     <View style={styles.container}>
@@ -103,7 +93,7 @@ const HomeScreen = () => {
               <Text style={styles.content}>주문내역</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.customButton} onPress={() => {}}>
-              <Text style={styles.content}>시안확인</Text>
+              <Text style={styles.content}>{'저장된\n작업'}</Text>
             </TouchableOpacity>
           </View>
         </View>

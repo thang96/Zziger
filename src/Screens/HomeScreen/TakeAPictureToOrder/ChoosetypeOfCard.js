@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Keyboard, View} from 'react-native';
 import CustomTwoButtonTop from '../../../Components/CustomTwoButtonTop';
 import CustomTowButtonBottom from '../../../Components/CustomTowButtonBottom';
 import ComponentNormalCard from './ComponentOfCard/ComponentNormalCard';
@@ -9,27 +9,44 @@ const ChoosetypeOfCard = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [isFront, setIsFront] = useState(true);
-  console.log(isFront, 'isFront');
+
   useEffect(() => {
     setIsFront(route.params?.isFront);
   }, []);
+
+  const [keyBoardIsShow, setKeyBoardIsShow] = useState();
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', () => {
+      setKeyBoardIsShow(true);
+    });
+    Keyboard.addListener('keyboardDidHide', () => {
+      setKeyBoardIsShow(false);
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
       <CustomTwoButtonTop
         styleComponent={styles.styleCustomTwoButtonTop}
         isFront={isFront}
+        labelLeft={'일반형'}
+        labelRight={'기타'}
         onPressLeft={() => setIsFront(true)}
         onPressRight={() => setIsFront(false)}
       />
       <View style={styles.container}>
         {isFront ? <ComponentNormalCard /> : <ComponentOtherCard />}
       </View>
-      <CustomTowButtonBottom
-        labelLeft={'이전'}
-        labelRight={'다음단계'}
-        onPressLeft={() => navigation.navigate('HomeScreen')}
-        onPressRight={() => {}}
-      />
+      {!keyBoardIsShow && (
+        <CustomTowButtonBottom
+          labelLeft={'이전'}
+          labelRight={'다음단계'}
+          onPressLeft={() => navigation.navigate('HomeScreen')}
+          onPressRight={() => {
+            navigation.navigate('UploadImage');
+          }}
+        />
+      )}
     </View>
   );
 };

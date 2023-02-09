@@ -12,7 +12,10 @@ import HomeScreen from './HomeScreen/HomeScreen';
 //--TakeAPictureToOrder
 import TakeAPictureToOrder from './HomeScreen/TakeAPictureToOrder/TakeAPictureToOrder';
 import ChoosetypeOfCard from './HomeScreen/TakeAPictureToOrder/ChoosetypeOfCard';
-//
+//--UploadImage
+import UploadImage from './HomeScreen/UploadImage/UploadImage';
+//--ViewManuscript
+import ViewManuscript from './HomeScreen/ViewManuscript/ViewManuscript';
 
 export {
   SplashScreen,
@@ -29,5 +32,8 @@ export {
   //--TakeAPictureToOrder
   TakeAPictureToOrder,
   ChoosetypeOfCard,
-  //
+  //--PhotoAlbum
+  UploadImage,
+  //--ViewManuscript
+  ViewManuscript,
 };

@@ -11,7 +11,7 @@ const TakeAPictureToOrder = () => {
         <Text>주문할 명함 유형을 선택하세요</Text>
       </View>
       <View style={styles.eachContainer}>
-        <ScrollView>
+        <ScrollView style={{flex: 1}}>
           <CustomReviewCardType
             type={'일반형'}
             description={'일반적으로 가장 많이 사용하는\n명함이예요'}

@@ -3,7 +3,7 @@ import {StyleSheet, View, Image, Text} from 'react-native';
 import {colors} from '../Constants';
 import CustomButton from './CustomButton';
 const CustomTwoButtonTop = props => {
-  const {isFront, onPressLeft, onPressRight} = props;
+  const {isFront, labelLeft, labelRight, onPressLeft, onPressRight} = props;
   return (
     <View style={styles.viewContainer}>
       <CustomButton
@@ -15,7 +15,7 @@ const CustomTwoButtonTop = props => {
               : colors.backgroundInput,
           },
         ]}
-        label={'일반형'}
+        label={labelLeft}
         styleLabel={[
           styles.styleLabel,
           {color: isFront ? colors.backgroundButton : 'grey'},
@@ -31,7 +31,7 @@ const CustomTwoButtonTop = props => {
               : colors.backgroundInput,
           },
         ]}
-        label={'기타'}
+        label={labelRight}
         styleLabel={[
           styles.styleLabel,
           {color: !isFront ? colors.backgroundButton : 'grey'},

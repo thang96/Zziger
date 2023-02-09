@@ -3,4 +3,5 @@ export default {
   backgroundButton: 'rgb(77,141,255)',
   backgroundButtonRed: 'rgb(251,132,124)',
   backgroundButtonGreen: 'rgb(45,204,112)',
+  backgroundButtonOrange: 'rgba(237,125,49,1)',
 };

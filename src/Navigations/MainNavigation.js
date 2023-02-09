@@ -1,14 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import {createStackNavigator} from '@react-navigation/stack';
 const Stack = createStackNavigator();
@@ -23,6 +15,8 @@ import {
   HomeScreen,
   TakeAPictureToOrder,
   ChoosetypeOfCard,
+  UploadImage,
+  ViewManuscript,
 } from '../Screens';
 
 const MainNavigation = () => {
@@ -80,6 +74,18 @@ const MainNavigation = () => {
       <Stack.Screen
         component={ChoosetypeOfCard}
         name={'ChoosetypeOfCard'}
+        options={{headerShown: false}}
+      />
+      {/*PhotoAlbum ----------------------------------*/}
+      <Stack.Screen
+        component={UploadImage}
+        name={'UploadImage'}
+        options={{headerShown: false}}
+      />
+      {/*ViewManuscript ----------------------------------*/}
+      <Stack.Screen
+        component={ViewManuscript}
+        name={'ViewManuscript'}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
