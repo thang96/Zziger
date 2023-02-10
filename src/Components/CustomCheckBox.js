@@ -64,6 +64,6 @@ const CustomCheckBox = props => {
 };
 const styles = StyleSheet.create({
   eachContainer: {flexDirection: 'row', flex: 1, alignItems: 'center'},
-  textTitle: {fontSize: 20, fontWeight: 'bold'},
+  textTitle: {fontSize: 18, fontWeight: 'bold'},
 });
 export default CustomCheckBox;

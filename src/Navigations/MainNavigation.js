@@ -17,6 +17,7 @@ import {
   ChoosetypeOfCard,
   UploadImage,
   ViewManuscript,
+  ManuscriptEditing,
 } from '../Screens';
 
 const MainNavigation = () => {
@@ -86,6 +87,11 @@ const MainNavigation = () => {
       <Stack.Screen
         component={ViewManuscript}
         name={'ViewManuscript'}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={ManuscriptEditing}
+        name={'ManuscriptEditing'}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

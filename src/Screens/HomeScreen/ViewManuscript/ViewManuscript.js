@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {StyleSheet, View, Dimensions, ScrollView, Image} from 'react-native';
 import CustomButton from '../../../Components/CustomButton';
@@ -5,6 +6,7 @@ import CustomTwoButtonBottom from '../../../Components/CustomTowButtonBottom';
 import CustomTwoButtonTop from '../../../Components/CustomTwoButtonTop';
 import {colors, icons, images} from '../../../Constants';
 const ViewManuscript = () => {
+  const navigation = useNavigation();
   const [isFront, setIsFront] = useState(true);
   return (
     <View style={styles.container}>
@@ -43,7 +45,9 @@ const ViewManuscript = () => {
           labelLeft={'주문하기'}
           labelRight={'여기서 편집'}
           onPressLeft={() => {}}
-          onPressRight={() => {}}
+          onPressRight={() => {
+            navigation.navigate('ManuscriptEditing', {isFront: true});
+          }}
         />
         <CustomTwoButtonBottom
           labelLeft={'PC에서 편집'}

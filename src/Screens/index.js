@@ -16,6 +16,7 @@ import ChoosetypeOfCard from './HomeScreen/TakeAPictureToOrder/ChoosetypeOfCard'
 import UploadImage from './HomeScreen/UploadImage/UploadImage';
 //--ViewManuscript
 import ViewManuscript from './HomeScreen/ViewManuscript/ViewManuscript';
+import ManuscriptEditing from './HomeScreen/ViewManuscript/ManuscriptEditing';
 
 export {
   SplashScreen,
@@ -36,4 +37,5 @@ export {
   UploadImage,
   //--ViewManuscript
   ViewManuscript,
+  ManuscriptEditing,
 };

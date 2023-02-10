@@ -11,6 +11,15 @@ const ComponentOtherCard = props => {
   const [printFrequency, setPrintFrequency] = useState('양면칼라');
   const [quantity, setQuantity] = useState(1);
   const [designEdit, setDesignEdit] = useState(false);
+  const [createHardCorners, setCreateHardCorners] = useState(false);
+  const [sewingMachine, setSewingMachine] = useState(false);
+  const [silverPaper, setSilverPaper] = useState(false);
+  const [molds, setMolds] = useState(false);
+  const [numbering, setNumbering] = useState(false);
+  const [photoCut, setPhotoCut] = useState(false);
+  const [punchAHole, setPunchAHole] = useState(false);
+  const [roundCorners, setRoundCorners] = useState(false);
+  const [epoxy, setEpoxy] = useState(false);
 
   const [modalPickerItem, setModalPickerItem] = useState(false);
   const [modalPickerPaper, setModalPickerPaper] = useState(false);
@@ -85,26 +94,60 @@ const ComponentOtherCard = props => {
             />
           </View>
           <View style={{width: '100%', flexDirection: 'row'}}>
-            <Text style={styles.textTitle}>후가공</Text>
-            <View style={{width: '70%', height: 50}}>
-              <View style={[styles.viewCheck]}>
+            <Text style={styles.textTitleCheckBox}>후가공</Text>
+            <View style={{width: '75%'}}>
+              <View
+                style={[styles.viewCheck, {justifyContent: 'space-between'}]}>
                 <CustomCheckBox
-                  viewCheckBox={{width: '30%'}}
-                  titleLeft={'무'}
-                  value={!designEdit}
-                  onPress={() => setDesignEdit(false)}
+                  titleLeft={'오시'}
+                  value={createHardCorners}
+                  onPress={() => setCreateHardCorners(!createHardCorners)}
                 />
                 <CustomCheckBox
-                  viewCheckBox={{width: '30%'}}
-                  titleLeft={'유'}
-                  value={designEdit}
-                  onPress={() => setDesignEdit(true)}
+                  titleLeft={'미싱'}
+                  value={sewingMachine}
+                  onPress={() => setSewingMachine(!sewingMachine)}
                 />
                 <CustomCheckBox
-                  viewCheckBox={{width: '30%'}}
-                  titleLeft={'유'}
-                  value={designEdit}
-                  onPress={() => setDesignEdit(true)}
+                  titleLeft={'박'}
+                  value={silverPaper}
+                  onPress={() => setSilverPaper(!silverPaper)}
+                />
+              </View>
+              <View
+                style={[styles.viewCheck, {justifyContent: 'space-between'}]}>
+                <CustomCheckBox
+                  titleLeft={'형압'}
+                  value={molds}
+                  onPress={() => setMolds(!molds)}
+                />
+                <CustomCheckBox
+                  titleLeft={'넘버링'}
+                  value={numbering}
+                  onPress={() => setNumbering(!numbering)}
+                />
+                <CustomCheckBox
+                  titleLeft={'도무송'}
+                  value={photoCut}
+                  onPress={() => setPhotoCut(!photoCut)}
+                />
+              </View>
+              <View
+                style={[styles.viewCheck, {justifyContent: 'space-between'}]}>
+                <CustomCheckBox
+                  titleLeft={'타공'}
+                  value={punchAHole}
+                  onPress={() => setPunchAHole(!punchAHole)}
+                />
+                <CustomCheckBox
+                  titleLeft={'귀도리'}
+                  value={roundCorners}
+                  onPress={() => setRoundCorners(!roundCorners)}
+                />
+                <CustomCheckBox
+                  titleLeft={'에폭시'}
+                  value={epoxy}
+                  onPress={() => setEpoxy(!epoxy)}
                 />
               </View>
             </View>
@@ -119,6 +162,12 @@ const styles = StyleSheet.create({
   eachContainer: {flex: 1, paddingHorizontal: 10, paddingTop: 10},
   image: {width: '100%', height: 220, alignSelf: 'center'},
   textTitle: {fontSize: 18, fontWeight: 'bold', color: 'black', width: '30%'},
+  textTitleCheckBox: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    width: '25%',
+  },
   viewCheck: {
     flexDirection: 'row',
     height: 50,
