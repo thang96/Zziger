@@ -2,17 +2,28 @@ import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {icons} from '../Constants';
 import CustomButton from './CustomButton';
+import LinearGradient from 'react-native-linear-gradient';
+
 const CustomAppBarEdit = props => {
-  const {} = props;
+  const {onPressHomeButton, onPressFinishButton} = props;
   return (
-    <View style={styles.container}>
-      <CustomButton source={icons.ic_home} styleImage={styles.styleIconHome} />
+    <LinearGradient
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 0}}
+      colors={['#07bccd', '#3f76da', '#782fe6']}
+      style={styles.container}>
+      <CustomButton
+        source={icons.ic_home}
+        styleImage={styles.styleIconHome}
+        onPress={onPressHomeButton}
+      />
       <CustomButton
         label={'완료'}
         styleLabel={styles.styleLabel}
         styleButton={styles.button}
+        onPress={onPressFinishButton}
       />
-    </View>
+    </LinearGradient>
   );
 };
 const styles = StyleSheet.create({
