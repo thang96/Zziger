@@ -9,4 +9,6 @@ export default {
   ic_rotate_left: require('../Assets/icons/ic_rotate_left.png'),
   ic_rotate_right: require('../Assets/icons/ic_rotate_right.png'),
   ic_home: require('../Assets/icons/ic_home.png'),
+  ic_keyboard: require('../Assets/icons/ic_keyboard.png'),
+  ic_fill_color: require('../Assets/icons/ic_fill_color.png'),
 };

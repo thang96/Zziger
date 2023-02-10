@@ -70,8 +70,8 @@ const LoginScreen = () => {
     let user = {username: username, password: password};
     let newArrayUser = [...listUser, user];
     AsyncStorage.setItem('listUser', JSON.stringify(newArrayUser));
-    navigation.navigate('HomeScreen');
     AsyncStorage.setItem('token', '123');
+    navigation.navigate('HomeScreen');
     //       AsyncStorage.setItem('listUser', newListUser);
     // try {
     //   await AsyncStorage.multiSet(['listUser', secondPair])
