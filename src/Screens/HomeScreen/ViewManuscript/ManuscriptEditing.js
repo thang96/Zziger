@@ -11,13 +11,21 @@ import {
 import CustomAppBarEdit from '../../../Components/CustomAppBarEdit';
 import CustomOption from '../../../Components/CustomOption';
 import {colors, icons, images} from '../../../Constants';
+import EditTextScreen from './ManuscriptEditingComponent/EditTextScreen';
 const ManuscriptEditing = () => {
   const [isFront, setIsFront] = useState(true);
   const route = useRoute();
   const navigation = useNavigation();
   const [isShow, setIsShow] = useState(false);
+  const [modalEditValue, setModalEditValue] = useState(false);
   return (
     <View style={styles.container}>
+      {modalEditValue && (
+        <EditTextScreen
+          modalVisible={modalEditValue}
+          onPressClose={() => setModalEditValue(false)}
+        />
+      )}
       <CustomAppBarEdit
         onPressHomeButton={() => navigation.navigate('HomeScreen')}
         onPressFinishButton={() => {
@@ -32,7 +40,10 @@ const ManuscriptEditing = () => {
           style={{width: 50, height: 50, backgroundColor: 'red'}}
         />
       </View>
-      <CustomOption isShow={isShow} />
+      <CustomOption
+        isShow={isShow}
+        pressEditValue={() => setModalEditValue(true)}
+      />
     </View>
   );
 };

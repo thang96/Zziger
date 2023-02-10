@@ -11,7 +11,7 @@ const CustomLoading = props => {
         visible={modalVisible}
         onRequestClose={onRequestClose}>
         <View style={styles.eachContainer}>
-          <Text style={styles.textLoading}>Loading</Text>
+          <Text style={styles.textLoading}>Loading...</Text>
           <ActivityIndicator size={80} color={'white'} />
         </View>
       </Modal>

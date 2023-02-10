@@ -12,7 +12,7 @@ import {Easing} from 'react-native-reanimated';
 import {colors, icons} from '../Constants';
 
 const CustomLoading = props => {
-  const {isShow} = props;
+  const {isShow, pressEditValue} = props;
 
   const move = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -42,7 +42,11 @@ const CustomLoading = props => {
         <Animated.ScrollView
           horizontal
           style={[styles.viewMenu, {transform: [{translateY: move}]}]}>
-          <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
+          <CustomButtonBottom
+            source={icons.ic_keyboard}
+            label={'edit text'}
+            onPress={pressEditValue}
+          />
           <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
           <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
           <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
@@ -65,15 +69,9 @@ const styles = StyleSheet.create({
   },
 });
 const CustomButtonBottom = props => {
-  const {source, label} = props;
+  const {source, label, onPress} = props;
   return (
-    <TouchableOpacity
-      style={{
-        height: 56,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginHorizontal: 20,
-      }}>
+    <TouchableOpacity style={styleCustom.button} onPress={onPress}>
       <Image
         source={source}
         style={{width: 30, height: 30, tintColor: colors.backgroundButton}}
@@ -84,4 +82,12 @@ const CustomButtonBottom = props => {
     </TouchableOpacity>
   );
 };
+const styleCustom = StyleSheet.create({
+  button: {
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 20,
+  },
+});
 export default CustomLoading;
