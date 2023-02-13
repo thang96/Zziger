@@ -1,6 +1,6 @@
 import {createAction, createSlice, current} from '@reduxjs/toolkit';
 const initialState = {
-  paymentInfo: 'paymentInfo',
+  paymentInfo: null,
 };
 export const paymenInfoSlice = createSlice({
   name: 'paymentInfo',
@@ -12,6 +12,6 @@ export const paymenInfoSlice = createSlice({
   },
 });
 
-export const {updateToken} = paymenInfoSlice.actions;
+export const {updatePaymenInfo} = paymenInfoSlice.actions;
 
 export default paymenInfoSlice.reducer;

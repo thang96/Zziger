@@ -14,16 +14,6 @@ const ChoosetypeOfCard = () => {
     setIsFront(route.params?.isFront);
   }, []);
 
-  const [keyBoardIsShow, setKeyBoardIsShow] = useState();
-  useEffect(() => {
-    Keyboard.addListener('keyboardDidShow', () => {
-      setKeyBoardIsShow(true);
-    });
-    Keyboard.addListener('keyboardDidHide', () => {
-      setKeyBoardIsShow(false);
-    });
-  }, []);
-
   return (
     <View style={styles.container}>
       <CustomTwoButtonTop
@@ -37,16 +27,6 @@ const ChoosetypeOfCard = () => {
       <View style={styles.container}>
         {isFront ? <ComponentNormalCard /> : <ComponentOtherCard />}
       </View>
-      {!keyBoardIsShow && (
-        <CustomTowButtonBottom
-          labelLeft={'이전'}
-          labelRight={'다음단계'}
-          onPressLeft={() => navigation.navigate('HomeScreen')}
-          onPressRight={() => {
-            navigation.navigate('CameraDetectScreen');
-          }}
-        />
-      )}
     </View>
   );
 };

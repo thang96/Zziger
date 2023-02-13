@@ -1,12 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Keyboard,
+} from 'react-native';
 import CustomChangeValue from '../../../../Components/CustomChangeValue';
+import CustomTowButtonBottom from '../../../../Components/CustomTowButtonBottom';
 import CustomPicker from '../../../../Components/CustomPicker';
 import {colors, icons, images} from '../../../../Constants';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {useDispatch} from 'react-redux';
+import {updatePaymenInfo} from '../../../../Stores/slices/paymentInfoSlice';
+import {useNavigation} from '@react-navigation/native';
 
 const ComponentNormalCard = props => {
   const {} = props;
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const [paper, setPaper] = useState('일반용지');
   const [size, setSize] = useState('90mm*50mm');
@@ -23,7 +36,15 @@ const ComponentNormalCard = props => {
       }),
     );
   }, []);
-
+  const [keyBoardIsShow, setKeyBoardIsShow] = useState();
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', () => {
+      setKeyBoardIsShow(true);
+    });
+    Keyboard.addListener('keyboardDidHide', () => {
+      setKeyBoardIsShow(false);
+    });
+  }, []);
   return (
     <View style={styles.container}>
       {modalPicker && (
@@ -37,12 +58,12 @@ const ComponentNormalCard = props => {
         />
       )}
       <View style={styles.eachContainer}>
-        <Image
-          source={images.im_normal_card}
-          style={styles.image}
-          resizeMode={'cover'}
-        />
         <ScrollView style={{paddingTop: 20}}>
+          <Image
+            source={images.im_normal_card}
+            style={styles.image}
+            resizeMode={'cover'}
+          />
           <CustomChangeValue type={'text'} title={'용지'} content={paper} />
           <CustomChangeValue type={'text'} title={'사이즈'} content={size} />
           <CustomChangeValue
@@ -75,7 +96,25 @@ const ComponentNormalCard = props => {
             <Text style={[styles.textPrice, {width: '30%'}]}>금액</Text>
             <Text style={styles.textPrice}>{`${quantity * 1000} 원`}</Text>
           </View>
+          <View style={{height: 50}} />
         </ScrollView>
+        {!keyBoardIsShow && (
+          <CustomTowButtonBottom
+            labelLeft={'이전'}
+            labelRight={'다음단계'}
+            onPressLeft={() => navigation.navigate('HomeScreen')}
+            onPressRight={() => {
+              let paymenInfo = {
+                paper: paper,
+                size: size,
+                quantity: quantity,
+                rounding: rounding,
+              };
+              dispatch(updatePaymenInfo(paymenInfo));
+              navigation.navigate('CameraDetectScreen');
+            }}
+          />
+        )}
       </View>
     </View>
   );

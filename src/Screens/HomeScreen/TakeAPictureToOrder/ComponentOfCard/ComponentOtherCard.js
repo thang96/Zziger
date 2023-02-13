@@ -1,11 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Keyboard,
+} from 'react-native';
 import CustomChangeValue from '../../../../Components/CustomChangeValue';
+import CustomTowButtonBottom from '../../../../Components/CustomTowButtonBottom';
 import CustomCheckBox from '../../../../Components/CustomCheckBox';
 import {icons, images} from '../../../../Constants';
+import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {updatePaymenInfo} from '../../../../Stores/slices/paymentInfoSlice';
 
 const ComponentOtherCard = props => {
   const {} = props;
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
   const [item, setItem] = useState('명함');
   const [paper, setPaper] = useState('반누보화이트');
   const [printFrequency, setPrintFrequency] = useState('양면칼라');
@@ -25,15 +39,49 @@ const ComponentOtherCard = props => {
   const [modalPickerPaper, setModalPickerPaper] = useState(false);
   const [modalPickerPrint, setModalPickerPrint] = useState(false);
   const [modalQuantity, setModalQuantity] = useState(false);
+
+  const [keyBoardIsShow, setKeyBoardIsShow] = useState();
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', () => {
+      setKeyBoardIsShow(true);
+    });
+    Keyboard.addListener('keyboardDidHide', () => {
+      setKeyBoardIsShow(false);
+    });
+  }, []);
+
+  const updatePayment = () => {
+    {
+      let paymenInfo = {
+        item: item,
+        paper: paper,
+        printFrequency: printFrequency,
+        quantity: quantity,
+        designEdit: designEdit,
+        createHardCorners: createHardCorners,
+        sewingMachine: sewingMachine,
+        silverPaper: silverPaper,
+        molds: molds,
+        numbering: numbering,
+        photoCut: photoCut,
+        punchAHole: punchAHole,
+        roundCorners: roundCorners,
+        epoxy: epoxy,
+      };
+      dispatch(updatePaymenInfo(paymenInfo));
+      navigation.navigate('CameraDetectScreen');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.eachContainer}>
-        <Image
-          source={images.im_normal_card}
-          style={styles.image}
-          resizeMode={'cover'}
-        />
         <ScrollView style={{paddingTop: 20}}>
+          <Image
+            source={images.im_normal_card}
+            style={styles.image}
+            resizeMode={'cover'}
+          />
           <CustomChangeValue
             type={'textInput'}
             title={'품목'}
@@ -152,7 +200,16 @@ const ComponentOtherCard = props => {
               </View>
             </View>
           </View>
+          <View style={{height: 50}} />
         </ScrollView>
+        {!keyBoardIsShow && (
+          <CustomTowButtonBottom
+            labelLeft={'이전'}
+            labelRight={'다음단계'}
+            onPressLeft={() => navigation.navigate('HomeScreen')}
+            onPressRight={() => updatePayment()}
+          />
+        )}
       </View>
     </View>
   );

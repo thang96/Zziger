@@ -89,6 +89,9 @@ const ViewManuscript = () => {
     }
   };
 
+  const detailInfor = useSelector(state => state?.paymentInfo?.paymentInfo);
+  console.log(detailInfor);
+
   const renderFrontCard = () => {
     return (
       <View>

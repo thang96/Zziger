@@ -3,9 +3,9 @@ import {StyleSheet, View, Image, Text} from 'react-native';
 import {colors} from '../Constants';
 import CustomButton from './CustomButton';
 const CustomTwoButtonBottom = props => {
-  const {onPressLeft, onPressRight, labelLeft, labelRight} = props;
+  const {onPressLeft, onPressRight, labelLeft, labelRight, styleButton} = props;
   return (
-    <View style={styles.viewContainer}>
+    <View style={[styles.viewContainer, styleButton]}>
       <CustomButton
         label={labelLeft}
         onPress={onPressLeft}

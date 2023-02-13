@@ -24,8 +24,9 @@ const CustomChangeValue = props => {
             keyboardType={keyboardType}
             placeholder={placeholder}
             style={{flex: 1, color: 'grey'}}
-            onChangeText={onChangeTextInput}
-            value={valueInput}
+            // onChangeText={onChangeTextInput}
+            defaultValue={valueInput}
+            onEndEditing={evt => onChangeTextInput(evt.nativeEvent.text)}
           />
           <CustomButton
             source={icons.ic_arrow_down}
