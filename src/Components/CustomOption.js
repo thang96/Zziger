@@ -11,20 +11,19 @@ import {
 import {Easing} from 'react-native-reanimated';
 import {colors, icons} from '../Constants';
 
-const CustomLoading = props => {
+const CustomOption = props => {
   const {isShow, pressEditValue} = props;
 
   const move = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     isShow ? menuMoveUp() : menuMoveDown();
   }, [isShow]);
-
   const menuMoveDown = () => {
     Animated.timing(move, {
       toValue: 56,
       duration: 200,
       useNativeDriver: true,
-      easing: Easing.ease,
+      easing: Easing.linear,
     }).start();
   };
   const menuMoveUp = () => {
@@ -47,15 +46,13 @@ const CustomLoading = props => {
             label={'edit text'}
             onPress={pressEditValue}
           />
-          <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
-          <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
-          <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
-          <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
-          <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
-          <CustomButtonBottom source={icons.ic_keyboard} label={'edit text'} />
           <CustomButtonBottom
-            source={icons.ic_fill_color}
-            label={'fill color'}
+            source={icons.ic_color_text}
+            label={'color text'}
+          />
+          <CustomButtonBottom
+            source={icons.ic_color_background}
+            label={'background color'}
           />
         </Animated.ScrollView>
       )}
@@ -74,9 +71,14 @@ const CustomButtonBottom = props => {
     <TouchableOpacity style={styleCustom.button} onPress={onPress}>
       <Image
         source={source}
-        style={{width: 30, height: 30, tintColor: colors.backgroundButton}}
+        style={{width: 20, height: 20, tintColor: colors.backgroundButton}}
       />
-      <Text style={{fontSize: 10, color: colors.backgroundButton}}>
+      <Text
+        style={{
+          fontSize: 8,
+          color: colors.backgroundButton,
+          textAlign: 'center',
+        }}>
         {label}
       </Text>
     </TouchableOpacity>
@@ -90,4 +92,4 @@ const styleCustom = StyleSheet.create({
     marginHorizontal: 20,
   },
 });
-export default CustomLoading;
+export default CustomOption;

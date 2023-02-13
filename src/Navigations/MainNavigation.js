@@ -16,6 +16,7 @@ import {
   TakeAPictureToOrder,
   ChoosetypeOfCard,
   UploadImage,
+  CameraDetectScreen,
   ViewManuscript,
   ManuscriptEditing,
 } from '../Screens';
@@ -81,6 +82,11 @@ const MainNavigation = () => {
       <Stack.Screen
         component={UploadImage}
         name={'UploadImage'}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={CameraDetectScreen}
+        name={'CameraDetectScreen'}
         options={{headerShown: false}}
       />
       {/*ViewManuscript ----------------------------------*/}

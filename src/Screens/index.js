@@ -14,6 +14,7 @@ import TakeAPictureToOrder from './HomeScreen/TakeAPictureToOrder/TakeAPictureTo
 import ChoosetypeOfCard from './HomeScreen/TakeAPictureToOrder/ChoosetypeOfCard';
 //--UploadImage
 import UploadImage from './HomeScreen/UploadImage/UploadImage';
+import CameraDetectScreen from './HomeScreen/UploadImage/CameraDetectScreen';
 //--ViewManuscript
 import ViewManuscript from './HomeScreen/ViewManuscript/ViewManuscript';
 import ManuscriptEditing from './HomeScreen/ViewManuscript/ManuscriptEditing';
@@ -35,6 +36,7 @@ export {
   ChoosetypeOfCard,
   //--PhotoAlbum
   UploadImage,
+  CameraDetectScreen,
   //--ViewManuscript
   ViewManuscript,
   ManuscriptEditing,

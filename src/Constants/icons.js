@@ -10,5 +10,7 @@ export default {
   ic_rotate_right: require('../Assets/icons/ic_rotate_right.png'),
   ic_home: require('../Assets/icons/ic_home.png'),
   ic_keyboard: require('../Assets/icons/ic_keyboard.png'),
-  ic_fill_color: require('../Assets/icons/ic_fill_color.png'),
+  ic_color_background: require('../Assets/icons/ic_color_background.png'),
+  ic_left_arrow: require('../Assets/icons/ic_left_arrow.png'),
+  ic_color_text: require('../Assets/icons/ic_color_text.png'),
 };

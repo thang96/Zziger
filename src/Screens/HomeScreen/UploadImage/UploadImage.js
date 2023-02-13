@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
+import CameraDetectComponent from '../../../Components/CameraDetectComponent';
 import CustomButton from '../../../Components/CustomButton';
 import CustomTwoButtonBottom from '../../../Components/CustomTowButtonBottom';
 import CustomTwoButtonTop from '../../../Components/CustomTwoButtonTop';
@@ -8,8 +9,17 @@ import {icons} from '../../../Constants';
 const UploadImage = () => {
   const navigation = useNavigation();
   const [isFront, setIsFront] = useState(true);
+  const [cameraFocus, setCameraFocus] = useState(true);
   return (
     <View style={styles.container}>
+      {/* {cameraFocus && (
+        <CameraDetectComponent
+          pressButtonClose={() => {
+            setCameraFocus(false);
+            navigation.goBack();
+          }}
+        />
+      )} */}
       <CustomTwoButtonTop
         isFront={isFront}
         labelLeft={'앞면'}
@@ -43,7 +53,7 @@ const UploadImage = () => {
         labelRight={'다음단계'}
         onPressLeft={() => {}}
         onPressRight={() => {
-          navigation.navigate('ViewManuscript');
+          navigation.navigate('CameraDetectScreen');
         }}
       />
     </View>

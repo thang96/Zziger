@@ -27,10 +27,9 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     width: '100%',
-    backgroundColor: 'blue',
+    backgroundColor: 'white',
     height: '100%',
   },
-  eachContainer: {flex: 1, backgroundColor: colors.backgroundInput},
   buttonClose: {width: 30, height: 30, alignSelf: 'center', tintColor: 'red'},
 });
 export default EditTextScreen;

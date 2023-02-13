@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(119,119,119,0.5)',
     justifyContent: 'space-between',
   },
-  styleIconHome: {width: 30, height: 30, tintColor: 'white'},
+  styleIconHome: {width: 20, height: 20, tintColor: 'white'},
   styleLabel: {fontSize: 15, color: 'black', fontWeight: '500'},
   button: {
     width: 100,

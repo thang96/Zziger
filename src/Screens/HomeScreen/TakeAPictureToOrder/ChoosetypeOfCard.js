@@ -43,7 +43,7 @@ const ChoosetypeOfCard = () => {
           labelRight={'다음단계'}
           onPressLeft={() => navigation.navigate('HomeScreen')}
           onPressRight={() => {
-            navigation.navigate('UploadImage');
+            navigation.navigate('CameraDetectScreen');
           }}
         />
       )}
